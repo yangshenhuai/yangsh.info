@@ -55,7 +55,7 @@
 {% endfor %}
 </ul>
 {% endif %}
-{% filter markdown|typogrify -%}
+{% filter markdown -%}
 {% mark post -%}
 {% block post -%}{%- endblock %}
 {%- endmark %}
