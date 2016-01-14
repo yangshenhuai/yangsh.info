@@ -52,8 +52,8 @@ urlcleaner:
 
 context:
     data:
-        site_url:
-        site_title: yangshenhuai
+        site_url: http://45.78.17.153:8080
+        site_title: yangshenhuaiu
         blog_title: /dev/blog
         author:
             name: yangshenhuai
