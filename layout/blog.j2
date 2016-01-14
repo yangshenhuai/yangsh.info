@@ -1,65 +1,144 @@
 {% extends "base.j2" %}
 
-{% block main -%}
-<article class="post">
-<nav class="post_nav">
-<a class="backlink" href="{{ content_url(resource.node.url) }}">Back to list</a>
-<a class="prev{{' disabled' if not resource.prev_by_time }}"
-    title="{{ resource.prev_by_time.meta.title }}"
-    {% if resource.prev_by_time %}
-    href="{{ content_url(resource.prev_by_time.url) }}"{% endif %}>
-    Previous
-</a>
+{% block js %}
+  {{ super () }}
 
-<a class="next{{' disabled' if not resource.next_by_time }}"
-    title="{{ resource.next_by_time.meta.title }}"
-    {% if resource.next_by_time %}
-    href="{{ content_url(resource.next_by_time.url) }}"{% endif %}>
-    Next
-</a>
+  <script type="text/javascript"
+          src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4eaacbb674bf94f0"
+          async="async">
+  </script>
 
-<br>
-<div id="twitter_share">
-<a href="http://twitter.com/share"
-    class="twitter-share-button"
-    data-count="vertical"
-    data-via="{{ tweet_via }}">Tweet</a>
-    <script type="text/javascript"
-        src="http://platform.twitter.com/widgets.js"></script>
-</div>
-<div id="facebook_like">
-<iframe src="http://www.facebook.com/plugins/like.php?href&amp;layout=box_count&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=65"
-            scrolling="no"
-            frameborder="0"
-            style="border:none; overflow:hidden; width:450px; height:65px;"
-            allowTransparency="true"></iframe>
-</div>
-</nav>
-<h1 class="title">
-    <a href="{{ content_url(resource.url) }}">
-        {{ resource.meta.title }}
-    </a>
-</h1>
-<time datetime="{{ resource.meta.created.strftime('%Y-%m-%d') }}">
-    Posted: {{ resource.meta.created.strftime('%a, %d %b %Y') }}
-</time>
+  <script type="text/javascript">
+    var disqus_shortname = 'jdanjou';
 
-{% if resource.meta.tags %}
-<ul class="tags clear">
-{% for tag in resource.meta.tags %}
-<li>
-    <a class="small" href="{{ content_url('blog/tags/'~tag~'.html') }}">
-        {{ tag }}
-    </a>
-</li>
-{% endfor %}
-</ul>
-{% endif %}
-{% filter markdown -%}
-{% mark post -%}
-{% block post -%}{%- endblock %}
-{%- endmark %}
-{%- endfilter %}
-</article>
+    (function () {
+      var s = document.createElement('script'); s.async = true;
+      s.type = 'text/javascript';
+      s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+      (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+  </script>
 
-{%- endblock %}
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+{% endblock %}
+
+{% block container %}
+  <div class="container post">
+    <header class="entry-header">
+      <div class="meta">
+        <small><i class="fa fa-calendar"></i>{{resource.meta.created.strftime('%A %d %B %Y') }}</small>
+        <small>
+          <i class="fa fa-folder"></i>
+          {% for tag in resource.meta.tags %}
+            <a href="/blog/tags/{{tag}}.html">{{tag}}</a>{% if not loop.last -%},{%- endif %}
+          {% endfor %}
+        </small>
+        <a href="{{ site_url }}{{ resource.full_url }}#disqus_thread">
+          <i class="fa fa-comment"></i> Comments
+        </a>
+        <span>
+          <i class="fa fa-user-plus"></i> Follow Me
+        </span>
+        <div class="addthis_horizontal_follow_toolbox"
+             style="margin-top: -25px;
+             margin-left: -25px;">
+        </div>
+      </div>
+    </header>
+    <div class="entry-content padding-bottom">
+      {% mark article %}
+      {% filter markdown -%}
+        {% block article %} {% endblock %}
+      {%- endfilter %}
+      {% endmark %}
+    </div>
+
+    {% for tag in resource.meta.tags if tag == "Python" %}
+      <div id="thgtp-form" class="row well text-center">
+        <div class="col-sm-9">
+          <h2>
+            <a href="/books/the-hacker-guide-to-python">
+              Check out <strong>The Hacker's Guide to Python</strong>!
+            </a>
+          </h2>
+          <p>
+            Want to know more about writing good and performant Python code?
+            Read The Hacker's Guide to Python and learn about designing Python
+            applications, scalability, state of the art, advice to apply when
+            building your application, tips and even hacker interviews, etc.
+            Interested?
+            <br>
+            <br>
+            <a role="button" class="btn btn-default"
+               href="/books/the-hacker-guide-to-python">
+               Download The Hacker's Guide to Python</a>
+          </p>
+        </div>
+        <div class="col-sm-3 text-center">
+          <a href="/books/the-hacker-guide-to-python">
+            <img src="/media/images/the-hacker-guide-to-python-darken-v2.png"
+                 alt="The Hacker's Guide to Python">
+          </a>
+        </div>
+      </div>
+
+      <div class="padding"></div>
+    {% endfor %}
+  </div>
+
+  <div id="subscribe" class="newsletter bg-sl-center overlay overlay-light"
+       style="background-image: url('/media/images/photo-notepad.jpg');">
+    <div class="container inforow middle">
+      <div class="col-sm-6">
+	<p>Get notified of my next blog post</p>
+      </div>
+      <div class="col-sm-6">
+	<div id="feedback-form">
+	  <form action="//danjou.us7.list-manage.com/subscribe/post?u=53ceb9eb499d62f6ee37c8167&amp;id=d80a8d25c4" method="post">
+	    <input name="EMAIL" placeholder="Enter your email address" required type="email">
+	    <button type="submit" class="btn btn-default">Subscribe</button>
+	  </form>
+	  <div class="success-block"></div>
+	</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="disqus_thread"></div>
+
+  <script type="text/javascript">
+    var disqus_shortname = 'jdanjou';
+
+    (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by
+      Disqus.</a></noscript>
+
+  <div class="addthis_recommended_horizontal"></div>
+
+  <div class="container padding-top">
+    <nav class="nav-single clearfix">
+      {% if resource.next_by_time %}
+        <div class="nav-previous text-left">
+          <a href="{{ resource.next_by_time.full_url }}">
+	    <small>Previous Post</small>
+	    <span>{{ resource.next_by_time.meta.title }}</span>
+          </a>
+        </div>
+      {% endif %}
+      {% if resource.prev_by_time %}
+        <div class="nav-next text-right">
+          <a href="{{ resource.prev_by_time.full_url }}">
+	    <small>Next Post</small>
+	    <span>{{ resource.prev_by_time.meta.title }}</span>
+          </a>
+        </div>
+      {% endif %}
+    </nav>
+  </div>
+{% endblock %}
