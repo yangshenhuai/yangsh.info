@@ -10,7 +10,7 @@ tags:
 {% block excerpt %}
 {% mark excerpt %}
 [hyde](http://hyde.github.io/) is a static Website generator which is written in
-[Python](https://www.python.org/).and as a fan of Python ,I choose hyde to generate my blog
+[Python](https://www.python.org/). SO as a fan of Python ,I choose hyde to generate my blog
 {% endmark %}
 {% endblock %}
 
@@ -35,7 +35,7 @@ If you want directly install Python2.7,
 you need to follow a [sequence of operation](https://github.com/h2oai/h2o-2/wiki/Installing-python-2.7-on-centos-6.3.-Follow-this-sequence-exactly-for-centos-machine-only)
 , otherwise it will destroy your system.
 so I choose another easy way to prepare the environment , use [virtualenv](https://virtualenv.readthedocs.org/en/latest/installation.html)
-it have very clear document, you can follow the guide to create a seperate Python enviroment for hyde.
+,it have very clear document, you can follow the guide to create a seperate Python enviroment for hyde.
 After setup Python2.7 env, you can install the [dependency of the hyde](http://hyde.github.io/install.html).
 after dependency installed, you can finally install hyde.
 {% syntax shell %}
@@ -91,7 +91,7 @@ hyde -s ~/blog -v serve -d ~/deploy -c site.yaml -a localhost -p 8080
 {% endsyntax %}
 now , you need to turn the designed template to Jinja2 template, in order to do that , you need to figure out
  what is general to all pages and what is specific to each one
-take a below html head as a example
+ , take a below html head as a example
  {% syntax html %}
 <head>
     <meta charset="UTF-8">
@@ -108,7 +108,7 @@ take a below html head as a example
 in this case pretty much every thing but the title is shared ,so we will just title content into
 a template field from metadata
 {% syntax html %}
-<title>{{ resource.meta.title }}</title>
+<title>\{\{ resource.meta.title \}\}</title>
 {% endsyntax %}
 The head element also links to icons ,styles and other resources.Hyde manages the correspondence between the folders
  for such resources and their URLS in result pages so you have to update these links to use a special Hyde function
@@ -120,6 +120,7 @@ The head element also links to icons ,styles and other resources.Hyde manages th
  {% endsyntax %}
 now let's fill the content , you can easily to mark place in the template where you
 want to fill in page-specific markup ,Just add Jinja block markers
+
 
 
 
