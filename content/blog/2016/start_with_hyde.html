@@ -74,6 +74,10 @@ this error TemplateAssertionError("no filter named 'typogrify'") , and since typ
 hyde -s ~/blog -v serve -d ~/deploy -c site.yaml -a localhost -p 8080
 {% endsyntax %}
   now visit localhost:8080 , you will see what you get!
+<figure class="illustration img-thumbnail"  style="width: 50%;">
+    <img src="/media/images/blog/2016/hyde_basic_template.tiff">
+</figure>
+
 
 
 ##Write your own template
@@ -119,14 +123,53 @@ The head element also links to icons ,styles and other resources.Hyde manages th
                                       href="{{ media_url('css/styles.css') }}" type="text/css"/>
  {% endsyntax %}
 now let's fill the content , you can easily to mark place in the template where you
-want to fill in page-specific markup ,Just add Jinja block markers
+want to fill in page-specific markup ,Just add Jinja block markers.
+ suppose you have below block in my_index.j2
+{% syntax html %}
+\{\% block intro \%\}
+<section id="intro">
+    <hgroup>
+        <h1>"Simplicity is the ultimate sophistication"
+            <span>- Leonardo da Vinci</span>
+        </h1>
+        <h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            Donec molestie. Sed aliquam sem ut arcu. Phasellus sollicitudin.
+            Vestibulum condimentum facilisis nulla. In hac habitasse platea
+            dictumst. Nulla nonummy. Cras quis libero.</h2>
+    </hgroup>
+</section>
+\{\% endblock intro \%\}
+{% endsyntax %}
+you can see there's already some text in this block , but these text will be relpaced when you
+ override in each page
+for example you have a my_index.html as below
+{% syntax html %}
+\-\-\- extends: my_index.j2 title: Strange Case of Dr Jekyll and Mr Hyde
+description: Tribute to a Victorian classic \-\-\-
+\{\% block intro \%\}
+<section id="intro">
+Test..
+ </section>
+\{\% endblock intro \%\}
+{% endsyntax %}
 
 
+if you generate this , the intro will only have Test... in it
 
 
-
-
-
+***Summary
+I only scratched the surface of the features available in Jinja templates and other components of Hyde.
+That works fine because Hyde is designed so that you can begin with the simpler functions
+and work up to more sophisticated features as you go along,
+whenever you need to enhance automation and workflow.
+You can develop many simple web pages with simple blocks (which you can nest).
+If you need automatically compiled weblogs and the like, Hyde's default layout provides a good example.
+Overall, Hyde gives you most of the features of content management systems and low-level web publishing frameworks.
+With the file system as the backing store,
+very little of your system is obscured or mysterious.
+I think this is a great benefit,
+and you now have enough of the basics to get started and create a simple web page with Hyde,
+and a web design template of your choosing.
 
 
 {# Local Variables: #}
