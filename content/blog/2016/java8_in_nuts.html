@@ -63,13 +63,13 @@ lambda is a block of code that pass around so it can be exectued later
     Java8 use streams to process collections of values , you just tell Java what you want instead of how you want to get it
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
 
-    {% syntax Java %}
-    public void testStream(){
-        List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
-        long count = words.stream().filter((s) -> s.length()>2).count(); //very easier to read , easy to parallelized(use parallelStream())
-        System.out.println(count);
-        }
-    {% endsyntax %}
+        {% syntax Java %}
+        public void testStream(){
+            List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
+            long count = words.stream().filter((s) -> s.length()>2).count(); //very easier to read , easy to parallelized(use parallelStream())
+            System.out.println(count);
+            }
+        {% endsyntax %}
 
     stream not store element
     stream didn't mutate the source
@@ -85,11 +85,11 @@ lambda is a block of code that pass around so it can be exectued later
             stream.forEach(System.out::println);
             fileContent.forEach(System.out::println);
             }
-        {% endsyntax %}
+    {% endsyntax %}
 
-       - filter
+       filter
              words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
-       - map
+       map
              {% syntax Java %}
                 public void testMap() throws IOException {
                     Stream  stream = Files.lines(Paths.get("1.txt")); //
@@ -97,7 +97,7 @@ lambda is a block of code that pass around so it can be exectued later
 
                 }
             {% endsyntax %}
-        - flatmap
+        flatmap
             {% syntax Java %}
                     class Developer {
 
@@ -141,6 +141,7 @@ lambda is a block of code that pass around so it can be exectued later
 
                             }
             {% endsyntax %}
+
  {# Local Variables: #}
  {# mode: markdown #}
  {# End: #}
