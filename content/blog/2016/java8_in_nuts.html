@@ -19,52 +19,47 @@ lambda is a block of code that pass around so it can be exectued later
         {% syntax Java %}
             //basic syntax (parameter) -> expression
             Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
-                //if parameter types of lambda can be inferred, you can omit them
-                comparator = (s1,s2) -> compare(s1.length(),s2.length());
-                //if parameter is empty () -> {//block of code}
-                Runnable r = () -> {for (int i=0;i<100;i++){
+            //if parameter types of lambda can be inferred, you can omit them
+            comparator = (s1,s2) -> compare(s1.length(),s2.length());
+            //if parameter is empty () -> {//block of code}
+            Runnable r = () -> {for (int i=0;i<100;i++){
                 System.out.println(i);
                 }
-                };
-
-                Arrays.sort(new String[]{"ab","abc","a"},(s1,s2) -> compare(s1.length(),s2.length()));
-                Thread t = new Thread( () -> {for (int i=0;i<100;i++){
-                System.out.println(i);
-                }
-                }
-                );
-                t.start();
-                t.join();
+            };
+            Arrays.sort(new String[]{"ab","abc","a"},(s1,s2) -> compare(s1.length(),s2.length()));
+            Thread t = new Thread( () -> {for (int i=0;i<100;i++){
+            System.out.println(i);
+            }
+            }
+            );
+            t.start();
+            t.join();
         {% endsyntax %}
         its illegal for a lambda expression to return a value in some branches but not in others
-
         the interface only have one single abstract method is called functional interface
         you can use lambda whenever a functional interface expected.
         in above example,comparator is a functional interface
-
-
         If there's already a method carries action that you'd like to pass to some other code
-        you can use method reference.
+        you can use <b>method reference</b>
         {% syntax Java %}
              // these two sentence are same.
              Arrays.sort(new String[]{"a","b","c"},String::compareToIgnoreCase);
              Arrays.sort(new String[]{"a","b","c"},(String s1,String s2) -> s1.compareToIgnoreCase(s2));
          {% endsyntax %}
-        three principle case
-        1. object::instanceMethod
-        2. Class::staticMethod
-        3. Class::instanceMethod
+        three method reference principle case
+        - object::instanceMethod
+        - Class::staticMethod
+        - Class::instanceMethod
         the first two cases is equivalent to the lambda expression that supplies the parameter of the method
         {% syntax Java %}
             System.out::println == (x) -> System.out.println(x)
-            Math::pow == (x,y)->Math.pow(x,y)
+            Math::pow == (x,y)-> Math.pow(x,y)
         {% endsyntax %}
 
         for the third case,the first parameter is the target of method, the method will be invoked on first parameter
         {% syntax Java %}
             String::compareToIgnoreCase==(x,y)->x.compareToIgnoreCase(y)
         {% endsyntax %}
-
     Java8 use streams to process collections of values , you just tell Java what you want instead of how you want to get it
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
 
@@ -98,9 +93,9 @@ lambda is a block of code that pass around so it can be exectued later
 
 
 
-       1. filter
+       - filter
              words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
-        2. map
+       - map
              {% syntax Java %}
                 @Test
                 public void testMap() throws IOException {
@@ -109,7 +104,7 @@ lambda is a block of code that pass around so it can be exectued later
 
                 }
             {% endsyntax %}
-        3.flatmap
+        - flatmap
             {% syntax Java %}
                     class Developer {
 
@@ -132,7 +127,7 @@ lambda is a block of code that pass around so it can be exectued later
 
 
 
-                    @Test
+                    \@Test
                     public void testFlatMap() {
                     List team = new ArrayList<>();
                         Developer polyglot = new Developer("esoteric");
