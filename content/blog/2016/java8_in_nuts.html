@@ -64,7 +64,7 @@ lambda is a block of code that pass around so it can be exectued later
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
 
     {% syntax Java %}
-    @Test
+    \@Test
     public void testStream(){
         List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
         long count = words.stream().filter((s) -> s.length()>2).count(); //very easier to read , easy to parallelized(use parallelStream())
@@ -72,14 +72,13 @@ lambda is a block of code that pass around so it can be exectued later
         }
     {% endsyntax %}
 
-          stream not store element
-          stream didn't mutate the source
-          stream operation are lazy ,not execute untile result is needed
-          stream follow "what , not how" principle
+    stream not store element
+    stream didn't mutate the source
+    stream operation are lazy ,not execute untile result is needed
+    stream follow "what , not how" principle
 
-
-        {% syntax Java %}
-            @Test
+    {% syntax Java %}
+            \@Test
             public void testStreamCreation() throws IOException {
             Stream stream = Stream.of(1,3,2,6,3); // use values to create a stream
             Stream empty = Stream.empty(); //empty stream
@@ -89,9 +88,6 @@ lambda is a block of code that pass around so it can be exectued later
             fileContent.forEach(System.out::println);
             }
         {% endsyntax %}
-
-
-
 
        - filter
              words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
