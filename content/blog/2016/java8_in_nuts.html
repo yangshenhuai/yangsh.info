@@ -15,8 +15,7 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
 {% endblock %}
 
 ## Lambdas
-    lambda is a block of code that pass around so it can be exectued later
-    ### lambda examples
+lambda is a block of code that pass around so it can be exectued later
         {% syntax Java %}
             //basic syntax (parameter) -> expression
             Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
@@ -38,12 +37,12 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
                 t.join();
         {% endsyntax %}
         its illegal for a lambda expression to return a value in some branches but not in others
-    ### functional interface
+
         the interface only have one single abstract method is called functional interface
         you can use lambda whenever a functional interface expected.
         in above example,comparator is a functional interface
 
-    ### method references
+
         If there's already a method carries action that you'd like to pass to some other code
         you can use method reference.
         {% syntax Java %}
@@ -66,11 +65,9 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
             String::compareToIgnoreCase==(x,y)->x.compareToIgnoreCase(y)
         {% endsyntax %}
 
-
-## Stream
     Java8 use streams to process collections of values , you just tell Java what you want instead of how you want to get it
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
-    ###basic syntax
+
     {% syntax Java %}
     @Test
     public void testStream(){
@@ -79,13 +76,12 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
         System.out.println(count);
         }
     {% endsyntax %}
-   ### difference with collections
+
         1. stream not store element
         2. stream didn't mutate the source
         3. stream operation are lazy ,not execute untile result is needed
         4. stream follow "what , not how" principle
 
-   ### stream creation
 
         {% syntax Java %}
             @Test
@@ -98,10 +94,13 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
             fileContent.forEach(System.out::println);
             }
         {% endsyntax %}
-   ### stream transformation
-        ## filter
+
+
+
+
+       1. filter
              words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
-        ## map
+        2. map
              {% syntax Java %}
                 @Test
                 public void testMap() throws IOException {
@@ -110,7 +109,7 @@ because its very suitable for cocurrent and reactive programming ,so java8 has a
 
                 }
             {% endsyntax %}
-        ##flatmap
+        3.flatmap
             {% syntax Java %}
                     class Developer {
 
