@@ -64,11 +64,9 @@ lambda is a block of code that pass around so it can be exectued later
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
 
         {% syntax Java %}
-        public void testStream(){
             List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
             long count = words.stream().filter((s) -> s.length()>2).count(); //very easier to read , easy to parallelized(use parallelStream())
             System.out.println(count);
-            }
         {% endsyntax %}
 
     stream not store element
