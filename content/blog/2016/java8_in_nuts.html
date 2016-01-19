@@ -76,17 +76,6 @@ lambda is a block of code that pass around so it can be exectued later
     stream operation are lazy ,not execute untile result is needed
     stream follow "what , not how" principle
 
-    {% syntax Java %}
-            public void testStreamCreation() throws IOException {
-            Stream stream = Stream.of(1,3,2,6,3); // use values to create a stream
-            Stream empty = Stream.empty(); //empty stream
-            Stream infinite = Stream.generate(Math::random); //infinite stream
-            Stream fileContent = Files.lines(Paths.get("1.txt")); // file content
-            stream.forEach(System.out::println);
-            fileContent.forEach(System.out::println);
-            }
-    {% endsyntax %}
-
  {# Local Variables: #}
  {# mode: markdown #}
  {# End: #}
