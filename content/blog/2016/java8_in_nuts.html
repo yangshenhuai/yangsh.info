@@ -1,0 +1,225 @@
+---
+title: "java8 in nuts"
+created: !!timestamp '2016-01-18 22:40:00'
+image: /media/images/blog/2015/stopwatch.jpg
+tags:
+    - Java
+---
+
+{% block excerpt %}
+{% mark excerpt %}
+        [Java](https://www.oracle.com/java/index.html) is a old Object-oritented programming language.
+        But recently,functional programming languages has risen in importance,
+        because its very suitable for cocurrent and reactive programming ,so java8 has add functional programing to makes it
+        mordern java
+{% endmark %}
+{% endblock %}
+
+## Lambdas
+    lambda is a block of code that pass around so it can be exectued later
+    ### lambda examples
+        {% syntax java %}
+            //basic syntax (parameter) -> expression
+            Comparator<String> comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
+                //if parameter types of lambda can be inferred, you can omit them
+                comparator = (s1,s2) -> compare(s1.length(),s2.length());
+                //if parameter is empty () -> {//block of code}
+                Runnable r = () -> {for (int i=0;i<100;i++){
+                System.out.println(i);
+                }
+                };
+
+                Arrays.sort(new String[]{"ab","abc","a"},(s1,s2) -> compare(s1.length(),s2.length()));
+                Thread t = new Thread( () -> {for (int i=0;i<100;i++){
+                System.out.println(i);
+                }
+                }
+                );
+                t.start();
+                t.join();
+        {% endsyntax %}
+        its illegal for a lambda expression to return a value in some branches but not in others
+    ### functional interface
+        the interface only have one single abstract method is called functional interface
+        you can use lambda whenever a functional interface expected.
+        in above example,comparator is a functional interface
+
+    ### method references
+        If there's already a method carries action that you'd like to pass to some other code
+        you can use method reference.
+        {% syntax java %}
+             // these two sentence are same.
+             Arrays.sort(new String[]{"a","b","c"},String::compareToIgnoreCase);
+             Arrays.sort(new String[]{"a","b","c"},(String s1,String s2) -> s1.compareToIgnoreCase(s2));
+         {% endsyntax %}
+        three principle case
+        1. object::instanceMethod
+        2. Class::staticMethod
+        3. Class::instanceMethod
+        the first two cases is equivalent to the lambda expression that supplies the parameter of the method
+        System.out::println == (x) -> System.out.println(x)
+        Math::pow == (x,y)->Math.pow(x,y)
+        for the third case,the first parameter is the target of method, the method will be invoked on first paramter
+        String::compareToIgnoreCase==(x,y)->x.compareToIgnoreCase(y)
+
+
+
+
+
+
+
+
+
+
+
+## Installing
+
+<div class="illustration pull-right icon">
+  <img src="/media/images/python.png">
+</div>
+hyde need Python2.7 or above to work, but not support Python3 yet.
+But my server is running a centos-6 which requires a Python2.6,
+If you want directly install Python2.7,
+you need to follow a [sequence of operation](https://github.com/h2oai/h2o-2/wiki/Installing-python-2.7-on-centos-6.3.-Follow-this-sequence-exactly-for-centos-machine-only)
+, otherwise it will destroy your system.
+so I choose another easy way to prepare the environment , use [virtualenv](https://virtualenv.readthedocs.org/en/latest/installation.html)
+,it have very clear document, you can follow the guide to create a seperate Python enviroment for hyde.
+After setup Python2.7 env, you can install the [dependency of the hyde](http://hyde.github.io/install.html).
+after dependency installed, you can finally install hyde.
+{% syntax shell %}
+pip install hyde
+{% endsyntax %}
+
+
+##Creating Basic Template
+to create a site ,simply use
+{% syntax shell %}
+hyde -s ~/blog -v create -l basic
+{% endsyntax %}
+-s means where the site should be created ,-v means should log detailed message to console ,
+-l means which template you want to use , currently hyde only have 3 layouts to choose , <b>basic</b> ,<b>test</b> and <b>doc</b>
+after this command finish , a folder named <em>blog</em> should be created under you directory
+and under that folder ,there will be another tow folders ,<b>layout</b> have all your template,<b>content</b> have all your contents.
+in in folder content, there's a folder named <b>media</b> stores all the images,css,js etc.
+
+##Generating Website
+if you create the template successfuly, next step would be generate,
+so you can have a package to deploy to [apache](https://httpd.apache.org/) or
+[nginx](http://nginx.org/en/)
+{% syntax shell %}
+hyde -s ~/blog -v gen -d ~/deploy -c site.yaml
+{% endsyntax %}
+ if you're lucky, you can have u own site now!
+ but i am the unluck guy, when I run <b>gen</b> command, it always fail and throw
+this error TemplateAssertionError("no filter named 'typogrify'") , and since typogrify is a enhancement tool ,so I just delete typogrify from template <b>base.j2</b>
+   and then it can work
+
+##Finally,Run it
+ now you can copy the deploy folder to apache or any other folder, but for test ,
+ hyde also have a build-in web server
+
+{% syntax shell %}
+hyde -s ~/blog -v serve -d ~/deploy -c site.yaml -a localhost -p 8080
+{% endsyntax %}
+  now visit localhost:8080 , you will see what you get!
+<figure class="illustration img-thumbnail"  style="width: 50%;">
+    <img src="/media/images/blog/2016/hyde_basic_template.png">
+</figure>
+
+
+
+##Write your own template
+  its nice to have this working website , but I had to say the basic template of hyde is not good-looking,
+  But there're a lot of nice-looking website template you can download from internet such as
+ [freehtml5templates] (http://www.freehtml5templates.com/).
+ after you download a template and unzipped it,usually it contains a ***index.html***
+ there's a file with a same name in your content folder,but that is actually a
+[Jinja2](http://jinja.pocoo.org/docs/dev/) template , so you can copy the html as ***.j2*** to the ***layout*** folder
+        at same time , you also need to download css ,images and js files to ***media*** folder
+{% syntax shell %}
+        cp $HTML_TEMP/index.html $HYDE/layout/my_index.j2
+        cp -r $HTML_TEMP/css/* $HYDE/media/css
+        cp -r $HTML_TEMP/images/* $HYDE/media/images
+{% endsyntax %}
+now , you need to turn the designed template to Jinja2 template, in order to do that , you need to figure out
+ what is general to all pages and what is specific to each one
+ , take a below html head as a example
+ {% syntax html %}
+<head>
+    <meta charset="UTF-8">
+    <title>Minimalism - Home</title>
+    <link rel="icon" href="images/favicon.gif" type="image/x-icon"/>
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
+    </script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/favicon.gif" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+</head>
+{% endsyntax %}
+in this case pretty much every thing but the title is shared ,so we will just title content into
+a template field from metadata
+{% syntax html %}
+<title>\{\{ resource.meta.title \}\}</title>
+{% endsyntax %}
+The head element also links to icons ,styles and other resources.Hyde manages the correspondence between the folders
+ for such resources and their URLS in result pages so you have to update these links to use a special Hyde function
+  {% syntax html %}
+    <link rel="icon" href="{{ media_url('images/favicon.gif') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ media_url('images/favicon.gif') }}"
+          type="image/x-icon"/> <link rel="stylesheet"
+                                      href="{{ media_url('css/styles.css') }}" type="text/css"/>
+ {% endsyntax %}
+now let's fill the content , you can easily to mark place in the template where you
+want to fill in page-specific markup ,Just add Jinja block markers.
+ suppose you have below block in my_index.j2
+{% syntax html %}
+\{\% block intro \%\}
+<section id="intro">
+    <hgroup>
+        <h1>"Simplicity is the ultimate sophistication"
+            <span>- Leonardo da Vinci</span>
+        </h1>
+        <h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            Donec molestie. Sed aliquam sem ut arcu. Phasellus sollicitudin.
+            Vestibulum condimentum facilisis nulla. In hac habitasse platea
+            dictumst. Nulla nonummy. Cras quis libero.</h2>
+    </hgroup>
+</section>
+\{\% endblock intro \%\}
+{% endsyntax %}
+you can see there's already some text in this block , but these text will be relpaced when you
+ override in each page
+for example you have a my_index.html as below
+{% syntax html %}
+\-\-\- extends: my_index.j2 title: Strange Case of Dr Jekyll and Mr Hyde
+description: Tribute to a Victorian classic \-\-\-
+\{\% block intro \%\}
+<section id="intro">
+Test..
+ </section>
+\{\% endblock intro \%\}
+{% endsyntax %}
+
+
+if you generate this , the intro will only have Test... in it
+
+
+###Summary
+I only scratched the surface of the features available in Jinja templates and other components of Hyde.
+That works fine because Hyde is designed so that you can begin with the simpler functions
+and work up to more sophisticated features as you go along,
+whenever you need to enhance automation and workflow.
+You can develop many simple web pages with simple blocks (which you can nest).
+If you need automatically compiled weblogs and the like, Hyde's default layout provides a good example.
+Overall, Hyde gives you most of the features of content management systems and low-level web publishing frameworks.
+With the file system as the backing store,
+very little of your system is obscured or mysterious.
+I think this is a great benefit,
+and you now have enough of the basics to get started and create a simple web page with Hyde,
+and a web design template of your choosing.
+
+
+{# Local Variables: #}
+{# mode: markdown #}
+{# End: #}
