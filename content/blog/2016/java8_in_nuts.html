@@ -20,7 +20,7 @@ tags:
     ### lambda examples
         {% syntax java %}
             //basic syntax (parameter) -> expression
-            Comparator<String> comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
+            Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
                 //if parameter types of lambda can be inferred, you can omit them
                 comparator = (s1,s2) -> compare(s1.length(),s2.length());
                 //if parameter is empty () -> {//block of code}
@@ -75,7 +75,7 @@ tags:
     {% syntax java %}
     @Test
     public void testStream(){
-        List<String> words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
+        List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
         long count = words.stream().filter((s) -> s.length()>2).count(); //very easier to read , easy to parallelized(use parallelStream())
         System.out.println(count);
         }
@@ -106,7 +106,7 @@ tags:
              {% syntax java %}
                 @Test
                 public void testMap() throws IOException {
-                    Stream<String> stream = Files.lines(Paths.get("1.txt")); //
+                    Stream  stream = Files.lines(Paths.get("1.txt")); //
                     stream.map(s -> s.length()).forEach(System.out::println); // after map, the new stream is the length of each line
 
                 }
@@ -116,7 +116,7 @@ tags:
                     class Developer {
 
                         private String name;
-                        private Set<String> languages;
+                        private Set  languages;
 
                         public Developer(String name) {
                             this.languages = new HashSet<>();
@@ -127,7 +127,7 @@ tags:
                             this.languages.add(language);
                         }
 
-                        public Set<String> getLanguages() {
+                        public Set  getLanguages() {
                             return languages;
                         }
                     }
@@ -136,7 +136,7 @@ tags:
 
                     @Test
                     public void testFlatMap() {
-                    List<Developer> team = new ArrayList<>();
+                    List team = new ArrayList<>();
                         Developer polyglot = new Developer("esoteric");
                         polyglot.add("clojure");
                         polyglot.add("scala");
@@ -150,7 +150,7 @@ tags:
                         team.add(polyglot);
                         team.add(busy);
 
-                        List<String> teamLanguages = team.stream().
+                        List  teamLanguages = team.stream().
                             map(d -> d.getLanguages()).
                             flatMap(l -> l.stream()).
                             collect(Collectors.toList());
@@ -159,17 +159,6 @@ tags:
 
                             }
             {% endsyntax %}
-
-
-
-
-
-
-
-
-
-
-
-            {# Local Variables: #}
-{# mode: markdown #}
-{# End: #}
+ {# Local Variables: #}
+ {# mode: markdown #}
+ {# End: #}
