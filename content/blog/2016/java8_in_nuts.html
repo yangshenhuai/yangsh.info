@@ -87,61 +87,6 @@ lambda is a block of code that pass around so it can be exectued later
             }
     {% endsyntax %}
 
-       filter
-             words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
-       map
-             {% syntax Java %}
-                public void testMap() throws IOException {
-                    Stream  stream = Files.lines(Paths.get("1.txt")); //
-                    stream.map(s -> s.length()).forEach(System.out::println); // after map, the new stream is the length of each line
-
-                }
-            {% endsyntax %}
-        flatmap
-            {% syntax Java %}
-                    class Developer {
-
-                        private String name;
-                        private Set  languages;
-
-                        public Developer(String name) {
-                            this.languages = new HashSet<>();
-                            this.name = name;
-                        }
-
-                        public void add(String language) {
-                            this.languages.add(language);
-                        }
-
-                        public Set  getLanguages() {
-                            return languages;
-                        }
-                    }
-                    public void testFlatMap() {
-                    List team = new ArrayList<>();
-                        Developer polyglot = new Developer("esoteric");
-                        polyglot.add("clojure");
-                        polyglot.add("scala");
-                        polyglot.add("groovy");
-                        polyglot.add("go");
-
-                        Developer busy = new Developer("pragmatic");
-                        busy.add("Java");
-                        busy.add("Javascript");
-
-                        team.add(polyglot);
-                        team.add(busy);
-
-                        List  teamLanguages = team.stream().
-                            map(d -> d.getLanguages()).
-                            flatMap(l -> l.stream()).
-                            collect(Collectors.toList());
-                            assertTrue(teamLanguages.containsAll(polyglot.getLanguages()));
-                            assertTrue(teamLanguages.containsAll(busy.getLanguages()));
-
-                            }
-            {% endsyntax %}
-
  {# Local Variables: #}
  {# mode: markdown #}
  {# End: #}
