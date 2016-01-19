@@ -8,17 +8,16 @@ tags:
 
 {% block excerpt %}
 {% mark excerpt %}
-        [Java](https://www.oracle.com/java/index.html) is a old Object-oritented programming language.
-        But recently,functional programming languages has risen in importance,
-        because its very suitable for cocurrent and reactive programming ,so java8 has add functional programing to makes it
-        mordern java
+[Java](https://www.oracle.com/java/index.html) is a old Object-oritented programming language.
+But recently,functional programming languages has risen in importance,
+because its very suitable for cocurrent and reactive programming ,so java8 has add functional programing to makes it mordern java
 {% endmark %}
 {% endblock %}
 
 ## Lambdas
     lambda is a block of code that pass around so it can be exectued later
     ### lambda examples
-        {% syntax java %}
+        {% syntax Java %}
             //basic syntax (parameter) -> expression
             Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
                 //if parameter types of lambda can be inferred, you can omit them
@@ -47,7 +46,7 @@ tags:
     ### method references
         If there's already a method carries action that you'd like to pass to some other code
         you can use method reference.
-        {% syntax java %}
+        {% syntax Java %}
              // these two sentence are same.
              Arrays.sort(new String[]{"a","b","c"},String::compareToIgnoreCase);
              Arrays.sort(new String[]{"a","b","c"},(String s1,String s2) -> s1.compareToIgnoreCase(s2));
@@ -57,22 +56,22 @@ tags:
         2. Class::staticMethod
         3. Class::instanceMethod
         the first two cases is equivalent to the lambda expression that supplies the parameter of the method
-        {% syntax java %}
+        {% syntax Java %}
             System.out::println == (x) -> System.out.println(x)
             Math::pow == (x,y)->Math.pow(x,y)
         {% endsyntax %}
 
         for the third case,the first parameter is the target of method, the method will be invoked on first parameter
-        {% syntax java %}
+        {% syntax Java %}
             String::compareToIgnoreCase==(x,y)->x.compareToIgnoreCase(y)
         {% endsyntax %}
 
 
 ## Stream
-    Java8 use streams to process collections of values , you just tell java what you want instead of how you want to get it
+    Java8 use streams to process collections of values , you just tell Java what you want instead of how you want to get it
     you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
     ###basic syntax
-    {% syntax java %}
+    {% syntax Java %}
     @Test
     public void testStream(){
         List  words = Arrays.asList("A","B","cdefghijklmn","JKL","XY","Z");
@@ -83,12 +82,12 @@ tags:
    ### difference with collections
         1. stream not store element
         2. stream didn't mutate the source
-        3. stream operation are <em>lazy</em> ,not execute untile result is needed
+        3. stream operation are lazy ,not execute untile result is needed
         4. stream follow "what , not how" principle
 
    ### stream creation
 
-        {% syntax java %}
+        {% syntax Java %}
             @Test
             public void testStreamCreation() throws IOException {
             Stream stream = Stream.of(1,3,2,6,3); // use values to create a stream
@@ -103,7 +102,7 @@ tags:
         ## filter
              words.stream().filter((s) -> s.length()>20) // transform original stream to stream only have long words
         ## map
-             {% syntax java %}
+             {% syntax Java %}
                 @Test
                 public void testMap() throws IOException {
                     Stream  stream = Files.lines(Paths.get("1.txt")); //
@@ -112,7 +111,7 @@ tags:
                 }
             {% endsyntax %}
         ##flatmap
-            {% syntax java %}
+            {% syntax Java %}
                     class Developer {
 
                         private String name;
@@ -144,8 +143,8 @@ tags:
                         polyglot.add("go");
 
                         Developer busy = new Developer("pragmatic");
-                        busy.add("java");
-                        busy.add("javascript");
+                        busy.add("Java");
+                        busy.add("Javascript");
 
                         team.add(polyglot);
                         team.add(busy);
