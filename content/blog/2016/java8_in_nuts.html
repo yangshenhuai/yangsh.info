@@ -75,9 +75,43 @@ is equivalent to lambda expression
 
 in this case, the first parameter is the target of the method
 {% syntax Java %}
-        String::compareToIgnoreCase
-        (x,y) -> x.compareToIgnoreCase  // they hv same meaning
+String::compareToIgnoreCase
+(x,y) -> x.compareToIgnoreCase  // they hv same meaning
 {% endsyntax %}
+
+<b>Construct reference</b>
+
+Construct reference Just like method reference.
+{% syntax Java %}
+ List<String> labels = ...;
+ Stream<Button> stream = labels.stream().map(Button::new);  //Button::new is same (label) -> new Button(String label);
+{% endsyntax %}
+you can also use array construct<br/>
+{% syntax Java %}
+int[]::new
+new int[length] // they are same.
+{% endsyntax %}
+
+<b>The Variable Scope</b>
+A lambda expression has three ingredients<br/>
+                1. a block of code<br/>
+                2. parameters<br/>
+                3.variables not parameters also not defined inside lambda : <em>free variables</em><br/>
+                (a block of code with values of free variables also called closures)</br>
+                {% syntax Java %}
+                    public static void repeatMessage(String text, int count) {
+                        Runnable r = () -> {
+                        for (int i = 0; i < count; i++) { System.out.println(text); Thread.yield();
+                        } };
+                        new Thread(r).start();
+                    }
+                {% endsyntax %}
+                the <em>text</em> and <em>count</em> are free variables , they are effectively final in lambda expression,
+                so you cannot change <em>count</em> in the body of lambdal.<br/>
+
+
+
+
 
 
 
