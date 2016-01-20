@@ -54,15 +54,16 @@ button.setOnAction(System.out::println); // is same as above
 {% endsyntax %}
 
 three types of method reference
+
 <b>object::instanceMethod</b>
 {% syntax Java %}
 System.out::println
 {% endsyntax %}
 is equivalent to lambda expression
-        {% syntax Java %}
+{% syntax Java %}
 x -> System.out.println(x)
-        {% endsyntax %}
-<b>Class::staticMethod<b>
+{% endsyntax %}
+<b>Class::staticMethod</b>
 {% syntax Java %}
 Math::pow
 {% endsyntax %}
@@ -71,6 +72,12 @@ is equivalent to lambda expression
 (x,y)->Math.pow(x,y)
 {% endsyntax %}
 <b>Class::instanceMethd</b>
+
+in this case, the first parameter is the target of the method
+{% syntax Java %}
+        String::compareToIgnoreCase
+        (x,y) -> x.compareToIgnoreCase  // they hv same meaning
+{% endsyntax %}
 
 
 
