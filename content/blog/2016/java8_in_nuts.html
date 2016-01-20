@@ -1,5 +1,5 @@
 ---
-title: "java8 in nutshell"
+title: "java8 in a Nutshell"
 created: !!timestamp '2016-1-20 21:33:00'
 image: /media/images/blog/2015/speedometer.jpg
 tags:
@@ -26,10 +26,26 @@ Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.lengt
 Comparator<String> comparator = (s1,s2) -> compare(s1.length(),s2.length()); // if param type can be inferred ,you can omit the type.
 EventHandler<ActionEvent> listener = event -> System.out.println("Thanks for clicking!"); // if single parameter,you can omit the ()
 {% endsyntax %}
-you never need to specify the result type of lambda expression, it always inferred from the context
+you not need to specify the result type of lambda expression, it always inferred from the context
 {% syntax Java %}
 (String first, String second) -> Integer.compare(first.length(), second.length()) // can be used in a context where a int is expected
 {% endsyntax %}
+If you want to return in values in lambda expression, make sure there's a value return in all branches
+{% syntax Java %}
+        (int x) -> { if (x >= 0) return 1; } //Invalid
+{% syntax Java %}
+
+## functional interface
+a interface with a single abstract method is called functional interface
+you can use lambda expression whenever a object of functional interface expected
+{% syntax Java %}
+        Arrays.sort(words,
+        (first, second) -> Integer.compare(first.length(), second.length()));
+{% syntax Java %}
+The Arrays.sort receive an object of Comparator<String> (functional interface),
+when invoke <em>compare</em> method (the abstract method),the lambda expression executed
+
+
 
 
 
