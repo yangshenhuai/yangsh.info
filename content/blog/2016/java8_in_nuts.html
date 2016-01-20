@@ -42,13 +42,26 @@ you can use lambda expression whenever a object of functional interface expected
         Arrays.sort(words,
         (first, second) -> Integer.compare(first.length(), second.length()));
 {% endsyntax %}
-The Arrays.sort receive an object of Comparator<String> (functional interface),
+The Arrays.sort receive an object of Comparator (functional interface),
 when invoke <em>compare</em> method (the abstract method),the lambda expression executed
 
+##Method Reference
+Sometimes there's already a method that carries out the action you'd like to pass on to
+some other code.
+{% syntax Java %}
+button.setOnAction(event -> System.out.println(event)); // is same as below
+button.setOnAction(System.out::println); // is same as above
+{% endsyntax %}
+
+three types of method reference
+- object::instanceMethod
+- Class::staticMethod
+- Class::instanceMethd
 
 
 
 
-{# Local Variables: #}
+
+        {# Local Variables: #}
 {# mode: markdown #}
 {# End: #}
