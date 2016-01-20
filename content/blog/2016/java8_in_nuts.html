@@ -54,9 +54,23 @@ button.setOnAction(System.out::println); // is same as above
 {% endsyntax %}
 
 three types of method reference
-- object::instanceMethod
-- Class::staticMethod
-- Class::instanceMethd
+<b>object::instanceMethod</b>
+{% syntax Java %}
+System.out::println
+{% endsyntax %}
+is equivalent to lambda expression
+        {% syntax Java %}
+x -> System.out.println(x)
+        {% endsyntax %}
+<b>Class::staticMethod<b>
+{% syntax Java %}
+Math::pow
+{% endsyntax %}
+is equivalent to lambda expression
+{% syntax Java %}
+(x,y)->Math.pow(x,y)
+{% endsyntax %}
+<b>Class::instanceMethd</b>
 
 
 
