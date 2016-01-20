@@ -1,72 +1,38 @@
 ---
-title: "java8 in nuts"
-created: !!timestamp '2016-01-18 22:40:00'
-image: /media/images/blog/2016/java8_logov2.jpg
+title: "java8 in nutshell"
+created: !!timestamp '2016-1-20 21:33:00'
+image: /media/images/blog/2015/speedometer.jpg
 tags:
-    - Java
+- Java
 ---
 
 {% block excerpt %}
 {% mark excerpt %}
+
 [Java](https://www.oracle.com/java/index.html) is a old Object-oritented programming language.
 But recently,functional programming languages has risen in importance,
-because its very suitable for cocurrent and reactive programming ,so java8 has add functional programing to makes it mordern java
+because its very suitable for cocurrent and reactive programming ,
+so java8 has add functional programing to makes it mordern java
+
 {% endmark %}
 {% endblock %}
 
-## Lambdas
-lambda is a block of code that pass around so it can be exectued later
-        {% syntax Java %}
-            //basic syntax (parameter) -> expression
-            Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length());
-            //if parameter types of lambda can be inferred, you can omit them
-            comparator = (s1,s2) -> compare(s1.length(),s2.length());
-            //if parameter is empty () -> {//block of code}
-            Runnable r = () -> {for (int i=0;i<100;i++){
-                System.out.println(i);
-                }
-            };
-            Arrays.sort(new String[]{"ab","abc","a"},(s1,s2) -> compare(s1.length(),s2.length()));
-            Thread t = new Thread( () -> {for (int i=0;i<100;i++){
-            System.out.println(i);
-            }
-            }
-            );
-            t.start();
-            t.join();
-        {% endsyntax %}
-        its illegal for a lambda expression to return a value in some branches but not in others
-        the interface only have one single abstract method is called functional interface
-        you can use lambda whenever a functional interface expected.
-        in above example,comparator is a functional interface
-        If there's already a method carries action that you'd like to pass to some other code
-        you can use <b>method reference</b>
-        {% syntax Java %}
-             // these two sentence are same.
-             Arrays.sort(new String[]{"a","b","c"},String::compareToIgnoreCase);
-             Arrays.sort(new String[]{"a","b","c"},(String s1,String s2) -> s1.compareToIgnoreCase(s2));
-         {% endsyntax %}
-        three method reference principle case
-        - object::instanceMethod
-        - Class::staticMethod
-        - Class::instanceMethod
-        the first two cases is equivalent to the lambda expression that supplies the parameter of the method
-        {% syntax Java %}
-            System.out::println == (x) -> System.out.println(x)
-            Math::pow == (x,y)-> Math.pow(x,y)
-        {% endsyntax %}
+# Lambdas
 
-        for the third case,the first parameter is the target of method, the method will be invoked on first parameter
-        {% syntax Java %}
-            String::compareToIgnoreCase==(x,y)->x.compareToIgnoreCase(y)
-        {% endsyntax %}
-    Java8 use streams to process collections of values , you just tell Java what you want instead of how you want to get it
-    you leave that to stream library to parallelize the operation using multiple threads for computing sums and counts etc.
-    stream not store element.
-    stream didn't mutate the source
-    stream operation are lazy,not execute untile result is needed
-    stream follow "what,not how" principle
+Lambda is a block of code that you can pass around so it can be executed later.
 
- {# Local Variables: #}
- {# mode: markdown #}
- {# End: #}
+{% syntax Java %}
+Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length()); //basic syntax (param) -> an expression
+Comparator<String> comparator = (s1,s2) -> compare(s1.length(),s2.length()); // if param type can be inferred ,you can omit the type.
+EventHandler<ActionEvent> listener = event -> System.out.println("Thanks for clicking!"); // if single parameter,you can omit the ()
+{% endsyntax %}
+you never need to specify the result type of lambda expression, it always inferred from the context
+{% syntax Java %}
+(String first, String second) -> Integer.compare(first.length(), second.length()) // can be used in a context where a int is expected
+{% endsyntax %}
+
+
+
+{# Local Variables: #}
+{# mode: markdown #}
+{# End: #}
