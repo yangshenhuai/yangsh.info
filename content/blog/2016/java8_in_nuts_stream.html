@@ -112,11 +112,74 @@ Stream<T> filter(Predicate<? super T> predicate);
 \* @return the new stream
 \*/
 <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
+{% endsyntax %}
 
+lets see some examples about these methods ,suppose we have Developer as VO.
+a Developer have name,and can use several languages.
+{% syntax Java %}
+class Developer {
+
+private String name;
+private Set<String> languages;
+
+public Developer(String name) {
+this.languages = new HashSet<>();
+this.name = name;
+}
+public String getName(){
+return this.name;
+}
+public void add(String language) {
+this.languages.add(language);
+}
+
+public Set<String> getLanguages() {
+return languages;
+}
+}
 
 {% endsyntax %}
 
+and suppose now we have a list of Developers
+{% syntax Java %}
+List<Developer> developers = DeveloperService.getAllDevelopers();
+{% endsyntax %}
 
-{# Local Variables: #}
+and you want print every developer name whose name start with "Peter"
+{% syntax Java %}
+developers.stream().map((d)-> d.getName() ).filter((name) -> name.startWith("Peter")).forEach(System.out::println) ;
+// the map method will generate a new stream which consist of developer names
+// and then invoke filter on that stream , and check if name start with "Peter" , if exists, it will put another new Stream
+//Finally print every name in the new Stream
+{% endsyntax %}
+Now suppose you want all set languages of all the developers
+{% syntax Java %}
+developers.stream.map((d)->d.getLanguages()).forEach(System.out::println)
+{% endsyntax%}
+But this will end up print some list like below output
+{% syntax %}
+[groovy, scala, clojure, go]
+[java, javascript]
+{% endsyntax %}
+but what if I just want one total list of languages, for this requirement,you can use flatMap
+{% syntax Java %}
+developers.stream().
+map(d -> d.getLanguages())
+.flatMap(l -> l.stream())
+.forEach(System.out::println);
+{% endsyntax %}
+now you can get result like below
+{% syntax %}
+groovy
+scala
+clojure
+go
+java
+javascript
+{% endsyntax%}
+Perfect!
+
+
+                {# Local Variables: #}
 {# mode: markdown #}
 {# End: #}
