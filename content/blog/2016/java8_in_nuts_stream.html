@@ -1,6 +1,6 @@
 ---
 title: "java8 in a Nutshell--Stream API"
-created: !!timestamp '2016-1-20 21:33:00'
+created: !!timestamp '2016-1-21 23:20:00'
 image: /media/images/blog/2016/streams.png
 tags:
 - Java
@@ -8,63 +8,30 @@ tags:
 
 {% block excerpt %}
 {% mark excerpt %}
-        Stream are the key abstraction in Java8 for processing collections of value.
-        Streams follow the "what,not how" priciple,you don't need to specify how to get the data.
-        you just specify how the computation should work.
-
+Stream are the key abstraction in Java8 for processing collections of value.
+Streams follow the "what,not how" priciple,you don't need to specify how to get the data.
+you just specify how the computation should work.
 {% endmark %}
 {% endblock %}
 
 # Stream Creation
-      for collection , you can call <b>stream(or parallStream)</b> method to create a stream
-      {% syntax Java %}
-            List<String> words =...
-            long count = words.stream().filter((s) -> s.length()>2).count();
-      {% endsyntax %}
-
-    or create with <b>Stream.of</b> method
-    {% syntax Java %}
-        Stream<String> stream = Stream.of("A,B,C".split(","));
-        Stream<String> stream = Stream.of("A","B","C");
-        Stream<String> empty = Stream.empty(); // empty Stream
-    {% endsyntax %}
-    and you can create a infinite stream use
-                {% syntax Java %}
-                    Stream.generate(generate(Supplier<T> s));
-                    //for example
-                    Stream<Double> randoms = Stream.generate(Math::random)
-                {% endsyntax %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+for collection,you can call <b>stream(or parallStream)</b> method to create a stream
+{% syntax Java %}
+List<String> words =...
+long count = words.stream().filter((s) -> s.length()>2).count();
+{% endsyntax %}
+or create with <b>Stream.of</b> method
+{% syntax Java %}
+Stream<String> stream = Stream.of("A,B,C".split(","));
+Stream<String> stream = Stream.of("A","B","C");
+Stream<String> empty = Stream.empty(); // empty Stream
+{% endsyntax %}
+and you can create a infinite stream
+{% syntax Java %}
+Stream.generate(generate(Supplier<T> s));
+//for example
+Stream<Double> randoms = Stream.generate(Math::random)
+{% endsyntax %}
 {# Local Variables: #}
 {# mode: markdown #}
 {# End: #}
