@@ -120,12 +120,8 @@ A lambda expression has three ingredients<br/>
 
                 Now you can declare method in interface in Java8
                 {% syntax Java %}
-                    @FunctionalInterface
                     public interface Person {
-
                     public String getId();
-
-
                     default public void info(){
                     System.out.println(getId());
                     }
