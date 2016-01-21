@@ -157,7 +157,7 @@ Now suppose you want all set languages of all the developers
 developers.stream.map((d)->d.getLanguages()).forEach(System.out::println)
 {% endsyntax%}
 But this will end up print some list like below output
-{% syntax %}
+{% syntax Java %}
 [groovy, scala, clojure, go]
 [java, javascript]
 {% endsyntax %}
@@ -169,14 +169,14 @@ map(d -> d.getLanguages())
 .forEach(System.out::println);
 {% endsyntax %}
 now you can get result like below
-{% syntax %}
+{% syntax Java %}
 groovy
 scala
 clojure
 go
 java
 javascript
-{% endsyntax%}
+{% endsyntax %}
 Perfect!
 
 
