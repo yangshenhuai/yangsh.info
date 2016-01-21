@@ -118,16 +118,11 @@ A lambda expression has three ingredients<br/>
 
  <b>Default methods</b>
 
-                Now you can declare method in interface in Java8
-                {% syntax Java %}
-                    public interface Person {
-                    public String getId();
-                    default public void info(){
-                    System.out.println(getId());
-                    }
-                    }
-                {% endsyntax %}
-                you can also add static method to interface, so you can get rid of companion classes
+Now you can declare method in interface in Java8 , its called default method. to declare default method
+
+               you just add <b>default</b> in front of method signature.
+
+you can also add static method to interface, so you can get rid of companion classes.
 
 
 
