@@ -1,7 +1,7 @@
 ---
-title: "java8 in a Nutshell"
+title: "java8 in a Nutshell--Lambda Expression"
 created: !!timestamp '2016-1-20 21:33:00'
-image: /media/images/blog/2015/speedometer.jpg
+image: /media/images/blog/2016/lambda_by_xtom.png
 tags:
 - Java
 ---
@@ -19,7 +19,7 @@ so java8 has add functional programing to makes it mordern java
 
 # Lambdas
 
-Lambda is a block of code that you can pass around so it can be executed later.
+[Lambda](https://en.wikipedia.org/wiki/Lambda_calculus) is a block of code that you can pass around so it can be executed later.
 
 {% syntax Java %}
 Comparator  comparator = (String s1, String s2) -> compare(s1.length(), s2.length()); //basic syntax (param) -> an expression
@@ -93,6 +93,7 @@ new int[length] // they are same.
 {% endsyntax %}
 
 <b>The Variable Scope</b>
+
 A lambda expression has three ingredients<br/>
                 1. a block of code<br/>
                 2. parameters<br/>
@@ -107,7 +108,30 @@ A lambda expression has three ingredients<br/>
                     }
                 {% endsyntax %}
                 the <em>text</em> and <em>count</em> are free variables , they are effectively final in lambda expression,
-                so you cannot change <em>count</em> in the body of lambdal.<br/>
+                so you cannot change <em>count</em> in the body of lambda.<br/>
+                the body of lambda have same scope as a nested block , its illeage to declare a parameter or
+                local variable in lambda that have a same name as a local variable
+                ,Inside a method you cannot have two local variables with the same name, so you cannot introduce such
+                variables inside the lambda expression .
+                when you use <em>this</em> , it will mean this the method to create a lambda
+                <br/>
+
+ <b>Default methods</b>
+
+                Now you can declare method in interface in Java8
+                {% syntax Java %}
+                    @FunctionalInterface
+                    public interface Person {
+
+                    public String getId();
+
+
+                    default public void info(){
+                    System.out.println(getId());
+                    }
+                    }
+                {% endsyntax %}
+                you can also add static method to interface, so you can get rid of companion classes
 
 
 
@@ -117,6 +141,11 @@ A lambda expression has three ingredients<br/>
 
 
 
-        {# Local Variables: #}
+
+
+
+
+
+                {# Local Variables: #}
 {# mode: markdown #}
 {# End: #}
