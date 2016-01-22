@@ -189,6 +189,109 @@ Stream twoStream = Stream.of("A","B","C").skip(1)  // twoStream only have B and 
 {% endsyntax %}
 `Stream.concat(stream1,stream2)` can concat two stream as one.
 
+#Basic Reduction
+Now we have already created and transform streams , now we need get the most important part:
+get the result of the stream. to get a result from a stream,you need to call a reduction 
+method(terminal operation),these methods reduce a value of your stream that you can use in you programe.
+
+`count` method return the number of elements in the stream
+{% syntax Java %}
+Stream<String> stream = Stream.of("A","B","C","A");
+long count = stream.filter((s) -> s.equals("A")).count(); // count should be 2
+{% endsyntax %}
+
+`max` and `min` returns the max value and min value of the stream.
+{% syntax Java %}
+Stream<String> stream = Stream.of("A","B","C","A");
+Optional<String> max = stream.map(s -> s.toLowerCase()).max(String::compareToIgnoreCase); // return Optional[c]
+if (max.isPresent()) {
+	System.out.println(max.get());
+}
+{% endsyntax %}
+
+`findFrist` return the first value in the nonEmpty collection
+`findAny` find any match in filter , will be effective when use parallStream
+`anyMatch` will return true if there's a match in the stream , it takes a Predicate as a param
+
+{% syntax Java %}
+Stream<String> stream = Stream.of("ABC","BCD","CD","AXY");
+
+Optional<String> first =  stream.filter(s -> s.startsWith("A")).findFirst();
+if (first.isPresent()){
+  System.out.println(first.get());
+}
+stream = Stream.of("ABC","BCD","CD","AXY"); // if not assgin again, will throw Exception since the stream already close in above terminal operation(findFirst)
+Optional<String> any =  stream.parallel().filter(s->s.startsWith("A")).findAny();
+if (any.isPresent()){
+    System.out.println(any.get());
+}
+stream = Stream.of("ABC","BCD","CD","AXY");
+boolean anyMatch = stream.filter(s->s.endsWith("D")).anyMatch(s->s.equals("CD"));
+System.out.println(anyMatch);
+{% endsyntax %}
+
+now lets take a look at `Optional` type.
+{% syntax Java %}
+Optional<String> first =  stream.filter(s -> s.startsWith("A")).findFirst();
+
+first.ifPresent(System.out::println) // takes a consumer as a input
+or 
+first.orElse("")		// if empty stream, will be ""
+or
+first.orElseGet(()->System.getProperty("user.dir")) // if empty stream, will be user.dir value
+you can even throw Exception when there is no value
+first.orElseThrow(NoSUchElementException::new)
+{% endsyntax %}
+
+if you want to use `Optional` , please use `Optional.empty()` , and `Optional.of()`
+
+#Reduction operation
+if you want combine the elements of the stream in another way , you need write 
+`reduce` method , the simplest form takes a binaryFunction and keeps apply it , start with first two
+{% syntax Java %}
+Stream<Integer> intStream = Stream.of(1,2,3);
+Optional<Integer> op = intStream.reduce((x,y)->x+y); // this equals v1+v2+v3
+{% endsyntax %}
+
+in general , if the `reduce` method have reduction operation `op` ,the reduction should yields
+v0 `op` v1 `op` v2... 
+
+often,there is an identity e such that e `op` x = x , and so you can use e as the start of the computation, for example , 0 is the identity of add ,1 is identity of multiply
+ {% syntax Java %}
+Stream<Integer> intStream = Stream.of(1,2,3);
+Integer op = intStream.reduce(0,(x,y)->x+y); // since ,at least it will be 0, so the result is Integer instead of Optional<Integer>
+ {% endsyntax %}
+
+ #Collecting result
+you may want to get the result of the stream instead of reduce it to a value.
+for that , you can just call `iterator` method which will return a iterator that you can 
+used to visit the elements.Or you can just call `toArray` to generate an array of stream elements
+there are a convenient `Collector` interface to collect stream to `List` or `Set`
+{% syntax Java %}
+Stream<String> stream = Stream.of("1","2","3");
+String[] arr =  stream.toArray(String[]::new); // you can not run below code at the same time
+List list = stream.collect(Collectors.toList());
+Set<String> set = stream.collect(Collectors.toSet());
+String result = stream.collect(Collectors.joining()); // concat the String
+ IntSummaryStatistics intSummaryStatistics =  stream.collect(Collectors.summarizingInt(Integer::valueOf));
+
+int max = intSummaryStatistics.getMax(); 
+
+
+
+{% endsyntax %}
+
+
+
+
+
+
+
+
+
+
+
+
 Perfect!
 
 
