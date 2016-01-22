@@ -262,7 +262,7 @@ Stream<Integer> intStream = Stream.of(1,2,3);
 Integer op = intStream.reduce(0,(x,y)->x+y); // since ,at least it will be 0, so the result is Integer instead of Optional<Integer>
  {% endsyntax %}
 
- #Collecting result
+#Collecting result
 you may want to get the result of the stream instead of reduce it to a value.
 for that , you can just call `iterator` method which will return a iterator that you can 
 used to visit the elements.Or you can just call `toArray` to generate an array of stream elements
