@@ -1,0 +1,109 @@
+---
+title: "java8--miscellaneous"
+created: !!timestamp '2016-1-29 00:05:00'
+image: /media/images/blog/2016/miscellaneous.jpg
+tags:
+- Java
+---
+
+{% block excerpt %}
+{% mark excerpt %}
+Java8 have some enhancement on Date and Time API to make it more easy to use. 
+
+{% endmark %}
+{% endblock %}
+
+#Date and Time API
+###absolute time
+In java8 `Instance` stands for a point on the time line
+the origin(epoch) is set at midnight of January 1, 1970(1970-01-01T00:00:00Z)
+start from this origin , time is measured in 86,400(24*60*60) seconds every day, 
+both forward and backward.
+{% syntax Java %}
+Instant instant = Instant.now();
+System.out.println("now " + instant.getEpochSecond());//will print 1453998796 (the seconds elapsed since 970-01-01T00:00:00 GMT)
+Instant min = Instant.MIN;
+System.out.println("min " + min.getEpochSecond()); // the earliest time Java8 can represent
+Instant max = Instant.MAX;
+System.out.println("max " + max.getEpochSecond()); // the latest time java8 can represent
+{% endsyntax %}
+`Duration` is the time of two `Instant` , you can get the difference between two Instant use `Duration.between`
+{% syntax Java %}
+Instant instant1 = Instant.now();
+Thread.sleep(5000L);    // doing something
+Instant instant2 = Instant.now();
+Duration duration = Duration.between(instant1,instant2);
+System.out.println(duration.getSeconds()); // convert the duration to seconds
+{% endsyntax %}
+you can easily convert a `Duration` to <em>nanos,milliseconds,seconds,minutes or days </em> by calling
+`toNanos`, `toMillis`, `toSeconds`, `toMinutes`, `toHours`, or `toDays`.
+you can even operate `Duration`.
+{% syntax Java %}
+Duration duration2 =  duration.plusSeconds(5);	// please note, duration is immutable and thread-safe.
+System.out.println(duration2.getSeconds());
+{% endsyntax %}
+
+###Local dates
+a local date/time has a date and/or time of the day , but without the timezone , you can use these when 
+you don't need timezone, for example, birthday, holiday etc.
+
+a `LocalDate` is the date ,  contains the year, the month,and the day of the month , but without the time, you can use below methods to get a `LocalDate`
+{% syntax Java %}
+LocalDate localDate = LocalDate.now(); // represents today
+LocalDate localDate2 = LocalDate.of(1989,Month.JANUARY,2); //represents 1989-1-2
+{% endsyntax %}
+you can also operate LocalDate,for example `plus` ,`plusDays`,`plusWeeks` etc.
+the method `util` will yield the difference between to `LocalDate` it can be very useful 
+{% syntax Java %}
+LocalDate today = LocalDate.now();
+LocalDate lunarNewYear = LocalDate.of(2016,Month.FEBRUARY,8);
+Period period = today.until(lunarNewYear);
+System.out.println("still hv " + period.getDays() + " to be new year");
+{% endsyntax %}
+there's also some `TemporalAdjuster` can be useful
+
+{% syntax Java %}
+LocalDate firstDateOfMonth = today.with(TemporalAdjusters.firstDayOfMonth()); // will return the first day of the month
+{% endsyntax %}
+
+###Local Time
+`LocalTime` represents the time of day , such as 15:30:15.012, same as `LocalDate`, `LocalTime` also have to way to get .
+{% syntax Java %}
+LocalTime now = LocalTime.now();
+LocalTime specificTime = LocalTime.of(1,2,30);
+{% endsyntax %}
+there's a `LocalDateTime` can store time-zone , but when you need timezone, its better to use `ZonedDateTime`
+
+{% syntax Java %}
+LocalDateTime localDateTime = LocalDateTime.now();
+LocalDateTime gmtTime =  LocalDateTime.now(ZoneId.of("GMT"));
+{% endsyntax %}
+
+###Zoned Time
+you can get all timeZone by call `ZoneId.getAvailableZoneIds()` , once you get a ZoneId
+you can turn a `LocalDateTime` to `ZonedDateTime`
+{% syntax Java %}
+LocalDateTime localDateTime = LocalDateTime.now();
+ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("GMT")); // get the time is GMT timezone 
+{% endsyntax %}
+
+### format and parse date time
+`DateTimeFormatter` provides formatters to print time and Date , `ofLocalizedDateTime` ,`ofLocalizedDate` and `ofLocalizedTime` is to create formatter that can format time to your local style
+{% syntax Java %}
+DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG);
+dateTimeFormatter.format(LocalDateTime.now()); // will return something like 2016年1月29日 下午10时29分46秒 if I run it in China computer
+{% endsyntax %}
+of course , you can also create your own format by specify a pattern
+{% syntax Java %}
+formatter = DateTimeFormatter.ofPattern("E yyyy-MM-dd HH:mm");
+{% endsyntax %}
+
+you can also convert `String` to `LocalDateTime` or `ZonedDateTime` or `LocalDate` by calling `parse()` of respective class
+{% syntax Java %}
+ZonedDateTime apollo11launch =
+ZonedDateTime.parse("1969-07-16 03:32:00-0400", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssxx"));
+{% endsyntax %}
+
+
+
+
