@@ -1,0 +1,66 @@
+---
+title: "Start With Spring Boot"
+created: !!timestamp '2016-1-30 19:41:00'
+image: /media/images/blog/2016/miscellaneous.jpg
+tags:
+- Spring
+- Spring Boot
+---
+{% block excerpt %}
+{% mark excerpt %}
+[Spring Boot](http://projects.spring.io/spring-boot/) is a new Framework developed by [Pivotal](http://pivotal.io/) to simply the spring application configuration and make it easy for developer to intergrate with other frameworks.I am just get it work on my computer , so I will write it down in case of I forget it~
+{% endmark %}
+{% endblock %}
+
+#Hello World
+I am using Intellij as the IDE, so I can just create a new `Gradle` project , for those who not familiar with `Gradle` in Intellij(like me) , `Use auto-import` means Intellij will automaticlly resolve all the changes made to Gradle project.`Create directories for empty content roots automatically` means Intellij will create the default directory structure for Gradle projects , I am select `Use default gradle wrapper (recommended)` because I am too lazy to download Gradle myself and setup `GRADLE_HOME` or `PATH`, so I let Intellij automaticlly get it.
+<figure class="illustration img-thumbnail"  style="width: 50%;">
+    <img src="/media/images/blog/2016/intellij_create_gradle.png">
+</figure>
+
+After I create this Gradle project, you can just add below dependency to you `build.gradle` dependencies ,you can use spring boot
+{% syntax shell %}
+compile("org.springframework.boot:spring-boot-starter-web:1.3.2.RELEASE")
+{% endsyntax %}
+
+And after that I wrote the hello world(app.groovy) to see if my configure works 
+{% syntax java %}
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+class HelloWorld {
+    @RequestMapping("/")
+    String home(){
+        "Hello World!"
+    }
+}
+{% endsyntax %}
+
+that is groovy code, but Intellij remaind me that I didn't get groovy installed in my local.
+I am too lazy to install it my self , so I choose to use [SDKMAN](http://sdkman.io/) , install SDKMAN is very easy ,just need run below commands in shell
+{% syntax shell %}
+curl -s get.sdkman.io | bash
+{% endsyntax %}
+after that command finish,you can open another shell, and you can get `groovy` installed and configured by just run below command .
+{% syntax shell %}
+sdk install groovy
+{% endsyntax %}
+and I also install spring boot CLI because its quite useful
+{% syntax shell %}
+sdk install springboot
+{% endsyntax %}
+Now, all things ready, you just run below commnad in the folder where you `app.groovy` lays 
+{% syntax shell %}
+spring run app.groovy
+{% endsyntax %}
+it takes a while to start up the first time , because it will resolve dependencies.
+afte it start up, you can open you browser and visit localhost:8080 . tada~ you will get it worked. how convienent~
+<figure class="illustration img-thumbnail"  style="width: 50%;">
+    <img src="/media/images/blog/2016/spring_boot_hello_world.png">
+</figure>
+
+
+
+
+ 
