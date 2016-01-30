@@ -9,6 +9,7 @@ tags:
 {% block excerpt %}
 {% mark excerpt %}
 Java8 have some enhancement on Date and Time API to make it more easy to use. 
+and aslo some concurrency enhancement
 
 {% endmark %}
 {% endblock %}
@@ -103,6 +104,71 @@ you can also convert `String` to `LocalDateTime` or `ZonedDateTime` or `LocalDat
 ZonedDateTime apollo11launch =
 ZonedDateTime.parse("1969-07-16 03:32:00-0400", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssxx"));
 {% endsyntax %}
+
+
+#Concurrency Enhancement
+###Atomic Values
+Since Java1.5, java provide a series of `atomic` types,for example `AtomicLong` ,`AtomicInteger` etc.
+you can learn more about Atomic values from [here](http://stackoverflow.com/questions/9749746/what-is-the-difference-of-atomic-volatile-synchronize)
+with those class,you can generate a sequence of number thread-safely.There are methods for setting,adding,and subtracting values, but if you want more complex update,you have to use the `compareAndSet` , it will atomically sets the value to the given updated value, and will return false if actual value was not equal to the expected value. so you can update a value like this
+{% syntax Java %}
+do {
+oldValue = largest.get();
+newValue = Math.max(oldValue, observed);
+} while (!largest.compareAndSet(oldValue, newValue));
+{% endsyntax %}
+if another thread also update <em>largest</em>,the `compareAndSet` will return false without set any newValue and will try again , this method have a better performance than use `synchornized`
+but in java8 you can simplify the usage by calling `largest.updateAndGet(x -> Math.max(x,observed))`
+
+###ConcurrentHashMap Improments
+`ConcurrentHashMap` is of course thread-safe , and its quite efficent, allowing multiple threads to update different parts of map concurrently without blcking each other.
+How to use `ConcurrentHashMap` , we can learn it from a simple example, suppose there're several threads
+to counter the frequencies of each word in an article, the first idea you may come is to use
+`ConcurrentHashMap<String,Long>` , but if you use it like below, then its not thread-safe , because another thread may also update the same word at the same time.
+{% syntax Java %}
+Long oldValue = map.get(word);
+Long newValue = oldValue == null ? 1 : oldValue + 1; map.put(word, newValue); // Error—might not replace oldValue
+{% endsyntax %}
+
+Alternatively,you can use `ConcurrentHashMap<String, AtomicLong>`  or with Java8, a `ConcurrentHashMap<String, LongAdder>` , then the update code would be like
+{% syntax Java %}
+map.putIfAbsent(word,new LongAdder());
+map.get(word).increment(); // or merge these two statement together, map.putIfAbsent(word,new LongAdder()).increment();
+{% endsyntax %}
+Java8 provides methods to make atomic update more convienent.The `compute` method is called with a key and a function to compute the new value.
+{% syntax Java %}
+map.compute(word,(k,v)-> v==null?1:v+1 ); // also have method called computeIfAbsent, computeIfPresent
+{% endsyntax %}
+there's a `merge` can make this even more easy, `merge` takes three parameters , the first is the key,
+the second is the initialValue if key is not present, otherwise , it will use the third parameters,
+a function to get the new value
+{% syntax Java %}
+map.merge(word, 1L, (existingValue, newValue) -> existingValue + newValue);
+{% endsyntax %}
+### Completeable Future 
+when you call a asyn method in Java, you will get Future<T> , denote there will be a value type of T will be avaliable in the furture. and you can call `future.get()` to get the result.
+but the `future.get()` is a blocking call, it will return until the the result is avaliable.
+In Java8, you can use `CompletableFuture<T>` , it have a method `thenApply` , which you can pass post-processing function.
+
+#Strings 
+Java8 finally have a `String.join` method
+{% syntax Java %}
+String joined = String.join("/", "usr", "local", "bin"); // "usr/local/bin"
+{% endsyntax %}
+
+#Files
+`Files.lines(path)` will return a stream of file lines , and you don't need to close that file  after you finish the operation , because `Stream` extends `AutoCloseable` , so when you finish the stream ,the file will be closed
+{% syntax Java %}
+try(Stream<String> lines = Files.lines(path)){
+	
+}// the stream and the file will be closed.
+{% endsyntax %}
+
+
+
+
+
+
 
 
 
