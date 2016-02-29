@@ -8,7 +8,7 @@ tags:
 ---
 {% block excerpt %}
 {% mark excerpt %}
-[Spring Boot](http://projects.spring.io/spring-boot/) is a new Framework developed by [Pivotal](http://pivotal.io/) to simply the spring application configuration and make it easy for developer to intergrate with other frameworks.I am just get it work on my computer , so I will write it down in case of I forget it~
+[Spring Boot](http://projects.spring.io/spring-boot/) is a new Framework developed by [Pivotal](http://pivotal.io/) to simply the spring application configuration(Convention over configuration) and make it easy for developer to intergrate with other frameworks.I am just get it work on my computer , so I will write it down in case of I forget it~
 {% endmark %}
 {% endblock %}
 
@@ -21,6 +21,35 @@ I am using Intellij as the IDE, so I can just create a new `Gradle` project , fo
 After I create this Gradle project, you can just add below dependency to you `build.gradle` dependencies ,you can use spring boot
 {% syntax shell %}
 compile("org.springframework.boot:spring-boot-starter-web:1.3.2.RELEASE")
+{% endsyntax %}
+and beside that , you may want to add `spring-boot-gradle-plugin` , it can provide task to create executable jars and run projects from source , my final configur files 
+{% syntax shell %}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.2.RELEASE")
+    }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile("org.springframework.boot:spring-boot-starter-web:1.3.2.RELEASE")
+}
 {% endsyntax %}
 
 And after that I wrote the hello world(app.groovy) to see if my configure works 
@@ -55,12 +84,11 @@ Now, all things ready, you just run below commnad in the folder where you `app.g
 spring run app.groovy
 {% endsyntax %}
 it takes a while to start up the first time , because it will resolve dependencies.
-afte it start up, you can open you browser and visit localhost:8080 . tada~ you will get it worked. how convienent~
+afte it start up, you can open you browser and visit localhost:8080 . tada~ you will get it worked. how convienent~ in fact , spring boot have configured the sprinv MVC and there's a embeded tomcat in it
 <figure class="illustration img-thumbnail"  style="width: 50%;">
     <img src="/media/images/blog/2016/spring_boot_hello_world.png">
 </figure>
 
-
-
+And there's a [SPRING INITIALIZR](https://start.spring.io/) even makes this more simple and easy , because it will generate a project structure for you.
 
  
