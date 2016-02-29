@@ -1,7 +1,7 @@
 ---
 title: "A program to bring me the latest news every day(1)"
 created: !!timestamp '2016-02-27 08:40:00'
-image: /media/images/blog/2016/my_hacker_news_index.png
+image: /media/images/blog/2016/hacker_news.jpg
 tags:
     - Java
     - Spring Boot
@@ -13,7 +13,7 @@ I usually to lazy to checkout the news,so I wrote this simple programe to keep m
 {% endblock %}
 the whole system architecture like this.
 <figure class="illustration img-thumbnail"  style="width: 60%;">
-    <img src="/media/images/blog/2016/hacker_news.jpg">
+    <img src="/media/images/blog/2016/my_hacker_news_architecture.png">
 </figure>
 
 I can configure which site I am going to scrape and what's my interest keywords,and the scrape service can use these data to capture the news that I am intrested, and when I want to see the news,I can just sent keyword `news` to my subscription account and it will give me the latest news of that day(my subscription account have no permission to push messages.)
