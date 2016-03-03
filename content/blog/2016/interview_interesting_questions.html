@@ -1,0 +1,73 @@
+---
+title: "the Interview Questions"
+created: !!timestamp '2016-03-03 07:40:00'
+image: /media/images/blog/2015/stopwatch.jpg
+tags:
+    - Algorithm
+    - Interview
+---
+
+{% block excerpt %}
+{% mark excerpt %}
+Last night I had a interview, and I realized that my ability to coding and some basic knowleges is a little worse than I used to be , 
+so I will record all the interview(interesting) questions I have meet.
+{% endmark %}
+{% endblock %}
+
+#Q1 - the sequence to init the object in java
+this is very basic knowledage in java,and I think I am right when I do it in interview ,but I was not very sure about the result
+the question almost like this , and it ask you what's the output when you run the test.
+{% syntax java %}
+class Parent {
+        protected String name;
+        Parent(){
+            System.out.println(1);
+        }
+        Parent(String name) {
+            System.out.println(2);
+            this.name = name;
+        }
+
+    }
+    class Child extends  Parent{
+
+        Child() {
+            System.out.println(3);
+        }
+
+        Child(String name) {
+            System.out.println(4);
+            Parent p = new Parent("F:" + name);
+            this.name = name;
+        }
+
+    }
+    @Test
+    public void testSequenceWhenConstructChildWithParameter(){
+        Parent parent = new Child("Test");
+    }
+{% endsyntax %}
+acctually , lets look the Child.class  the java compiled .
+{% syntax java %}
+Child(SequenceOfConstructorTest this$0)
+  {
+    super();
+    System.out.println(3);
+  }
+  
+  Child(SequenceOfConstructorTest, String name)
+  {
+    super();
+    System.out.println(4);
+    SequenceOfConstructorTest.Parent p = new SequenceOfConstructorTest.Parent( "F:" + name);
+    this.name = name;
+  }
+{% endsyntax %}
+
+yeah, the first statement in a constructor is the chaining of super class constructor.In fact, the first statement in any constructor chains to the super class constructor , so the result ould be 1 4 2
+
+#To Be Continued.. 
+
+
+
+
