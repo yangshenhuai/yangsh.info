@@ -66,7 +66,7 @@ Child()
 
 yeah, the first statement in a constructor is the chaining of super class constructor.In fact, the first statement in any constructor chains to the super class constructor , so the result ould be 1 4 2
 
-#How to Build a DAMU(弹幕) System
+#Q2 - How to Build a DAMU(弹幕) System
 I never thought of this question before , my first idea is to use [websocket](http://www.websocket.org/) as transport,since websocket is the protocol for two-way communication  between web pages and remote host,after the inteview I checked a little more about websocket . web introduces the WebSocket interface and defines a full-duplex communication channel that operates through a single socket over the Web. its a new protocol coming with HTML5.
 let's check a simple request message as example 
 {% syntax html %}
@@ -103,6 +103,7 @@ myWebSocket.onclose = function(evt) { alert("Connection closed."); };
 myWebSocket.send("Hello WebSockets!");
 myWebSocket.close();
 {% endsyntax %}
+
 
 
 
