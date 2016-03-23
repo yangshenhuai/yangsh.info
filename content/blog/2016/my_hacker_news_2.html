@@ -1,0 +1,185 @@
+---
+title: "A program to bring me the latest news every day(2)"
+created: !!timestamp '2016-03-23 08:40:00'
+image: /media/images/blog/2016/hacker_news.jpg
+tags:
+    - Python
+    - Web scraping
+---
+{% block excerpt %}
+{% mark excerpt %}
+this is the second part of [part1](/my_hacker_news), recently I am too busy to write any blogs. so this is blog behind the schedule,
+anyway , now I am preparing to finish this
+{% endmark %}
+{% endblock %}
+
+in the first part I have introduced about the `configuration service` and a page can show the results that `scrape service` scraped from the target website,now I just keep `wechat service` as the singleton programe , and `scrape service` will be contained in  `wechat service`.
+
+#Scrape service
+now I have configurations about which site I am intrested ,so I can get those configuration and scrape these sites.
+
+###scheduler 
+I have set up the scheduler which will start the scrape at set intervals, I use the [apscheduler](http://apscheduler.readthedocs.org/en/3.0/) to act as scheduler because its very easy-to-use and very powerful. when `wechat_server` start up, it will invoke this `schedule` methond in `news_controller` and this will invoke  `base_scape.sacpe` very 30mins
+{% syntax python %}
+def schedule():
+	scheduler = BackgroundScheduler(timezone='UTC')
+	scheduler.add_job(base_scaper.scape, 'interval', minutes=30)
+	scheduler.start()
+{% endsyntax %}
+
+###scrape
+since `news_controller` will `import base_scraper` , so when `import` happends it will get the configurations I set up in `configuration service`
+the  `redis_operation` will load all the configurations from redis and construct a setting list , in the method we can for loop this list and use [requests](http://docs.python-requests.org/en/master/) to get the page content and use corresponding `parser` to parse the page content. then the parsed result will be store in the redis.
+{% syntax python %}
+the_http_prefix = "http://"
+settings = redis_operation.readConfigurations()
+...
+def scape():
+	global settings
+	global the_http_prefix
+	all_results = {}
+	print('going to start scape..')
+	for setting in settings:
+		print('going to scape ' , setting.name)
+		website_url = the_http_prefix+setting.url
+		r = requests.get(website_url,verify=False)
+		result = base_parser.parse(r.text,setting.name,website_url,setting.keywords)
+		if result is not None:
+			all_results.update(result);
+	redis_operation.save_result(all_results)	
+{% endsyntax %}
+I use `sorted set` in redis to store these results using timestamp as the `score`. because when get it later, can sort with time,so latest news always comes before old news.
+{% syntax python %}
+def save_result(results) :
+	add_list=[]
+	if results is not None and len(results) > 0:
+		for result in results:
+			key=gen_key(result,results)
+			if r.zscore(result_table_name,key) is None :
+				add_list.append(key)
+				add_list.append(time.time())
+		r.zadd(result_table_name,*add_list) 
+{% endsyntax %}
+
+###parse
+now we have the content of the website,the next step is try to parse the content to check if there's any articles we're intrested in.
+in `base_parser` , it just get corresponding parser and parse the html page.
+{% syntax python %}
+import re
+import myblogParser
+import hnParser
+import infoqNewsParser
+parse_map={'myblog':myblogParser,'HN':hnParser,'info_news':infoqNewsParser};
+ignore_word=('\n')
+def parse(html,website_name,website_url,keywords):
+	if website_name in parse_map:
+		return parse_map[website_name].parse(html,keywords,website_url)
+	else :
+		print('Warning! no parser configured for',website_name,',please check base_parser.parse_map')
+		return None
+{% endsyntax %}
+take myblog as the example,I use [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) to parse the html and get all the article titles and if the title or tags contains the keyword I am intrested ,and if yes, it will put it in a map which the key is the title and the value is the url of this article.
+{% syntax python %}
+def parse(html,keywords,url_prefix):
+	soup = BeautifulSoup(html,'html.parser');
+	header_list = soup.find_all('header',attrs={'class':'entry-header'});
+	results= {}
+	for header in header_list:
+		for child in header.descendants:
+			if child.name=='a' and base_parser.isContainKeyword(keywords,child.text):	
+				if not base_parser.isContainKeyword('tags',child['href']):
+					#titles
+					results[child.text] = url_prefix + child['href']		
+
+				else:
+					#tags
+					results[header.find('a').text] = url_prefix + header.find('a')['href']		
+	return results
+{% endsyntax %}
+
+#Wechat Server
+[wechat](https://web.wechat.com/) is a very popular application , almost everyone use it every day, so thats the reason why I choose use my wechat subscription account to check all the news , to start wechat Subscriptins develope,you have to check [this document](https://mp.weixin.qq.com/wiki/3/d205351634ce4513639316e381114043.html) to learn their API.
+after you setup you subscription account in [wechat](https://mp.weixin.qq.com/), you devevelop basic config should look like this
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/wechat_dev_center.png">
+</figure>
+and then the message your subscription account received will forward to your application with the path `/weixin`.
+
+I use [Bottle](http://bottlepy.org/docs/dev/index.html) as the web frame work of wechat server, its quite easy to use.
+{% syntax python %}
+from bottle import route, request,response ,run,post,get,template,static_file
+...
+if __name__ == '__main__':
+	access_token = get_access_token()
+
+	news_controller.schedule()
+	
+	#this will start the built-in server
+	run(host='localhost',port=8080,debug=True)
+{% endsyntax %}
+but now as wechat server says , wechat only forward message to server's port 80 , But my server's port 80 is used by nginx,which serve my blog , and I don't want to change that. but we can use nginx [proxy_pass](http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass) to map /weixin request to port 8080 by add below configuration in nginx configuration files
+{% syntax shell %}
+server {
+    listen       80;
+    server_name  localhost;
+    ...
+
+    location /weixin{
+     proxy_pass http://127.0.0.1:8080;
+   }
+}
+{% endsyntax %}
+
+After all this done, then need to write the logic to recive the message
+{% syntax python %}
+@post('/weixin')   //the wechat will sent a POST request to our application
+def receive_msg():
+	global all_command_str
+	response.headers['Content-Type'] = 'xml/application' #the response to wechat should be xml
+	try:
+		
+		req_data = request.body.read().decode(encoding='utf8') # get the request body data
+		msg_data = get_msg_data(req_data)     			   #the request data is a xml, and need to parse the xml and construct the data.
+															#to prevent attack like billion laughs ,use defusedxml  to parse the xml
+		print('msg_data',msg_data)
+		if msg_data['Content'] not in all_command_str: # if the message not in command list , tell the user the valid command
+			resp_content = 'invalid command.valid usages:\n'
+			for command in all_command_str:
+				resp_content += command
+				resp_content += ':'
+				resp_content += all_command_str[command]
+				resp_content += '\n'
+			return generate_text_messages(msg_data,resp_content)
+
+		news_list = news_controller.get_news(msg_data['Content'])  # else just get all the news from redis
+		return generate_news_messsage(msg_data,news_list)			# generate the html file with latest news ,and return to wechat 
+	except Exception as e:
+		print('fail to process coming msg' , e );
+		return generate_text_messages(msg_data,'system busy,please try again.');
+{% endsyntax %}
+
+the `get_news` just get all tdy news(ordered by time descending).
+{% syntax python %}
+def get_tdy_news():
+	now = datetime.datetime.now()	# current time 
+	now_epoch = now.strftime('%s') #epoch time of now
+	start_of_tdy = now.replace(hour=0,minute=0,second=0,microsecond=0)	#the start time of tdy
+	start_of_tdy_epoch=start_of_tdy.strftime('%s') #epoch time of start of tdy
+	result_list = r.zrangebyscore(result_table_name,start_of_tdy_epoch,now_epoch) # so get all the results storage time between start 
+																					#of tdy and current time 
+	return [result.decode('utf8') for result in result_list ]	#decode to string 
+{% endsyntax %}
+the `generate_news_messsage` will first generate a html with the news from redis and then return a response which `MsgType` is `news` and `Url` is the url of generated file ,wechat can then show the response correctly,
+although the page is a little bit ugly, but its enough for me~ , and if anyone intrested in enhance it , you are very very welcome!  [github](https://github.com/yangshenhuai/myHackNews)
+
+<figure class="illustration img-thumbnail"  style="width: 100%;">
+    <img src="/media/images/blog/2016/wechat_response.jpg">
+</figure>
+
+<figure class="illustration img-thumbnail"  style="width: 100%;">
+    <img src="/media/images/blog/2016/wechat_news.jpg">
+</figure>
+
+
+
+
