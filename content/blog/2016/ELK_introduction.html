@@ -39,14 +39,13 @@ A Logstash pipeline in most use cases has one or more input and output and filte
 <figure class="illustration img-thumbnail"  style="width: 60%;">
     <img src="/media/images/blog/2016/basic_logstash_pipeline.png">
 </figure>
+
 [input plugins](https://www.elastic.co/guide/en/logstash/current/input-plugins.html) enables a special source of events to be read by Logstash.
 [output plugin](https://www.elastic.co/guide/en/logstash/current/output-plugins.html) sends event data to a particular destination.
 [filter plugin](https://www.elastic.co/guide/en/logstash/current/filter-plugins.html) performs intermediary processing on an event. 
 
-lets take a example about using Logstash pipeline to anaylyze the nginx access log
-{% syntax shell %}
-bin/logstash -f conf/access_log.conf --configtest  # tell the Logstash where to load input,output and filter plugin
-{% endsyntax %}
+lets take a example about using Logstash pipeline to anaylyze the nginx access log , you need to create the configuration file for plugins , for example `access_log.conf`.
+
 and in `access_log.conf` , you can add configurations about pipeline. But we need to tell how to parse our logs, and this part we need add a 
 pattern file
 {% syntax shell %}
