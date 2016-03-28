@@ -1,0 +1,160 @@
+---
+title: "Using E(Elasticsearch)L(Logstash)K(Kibana) for indexing,searching and analyzing application log data"
+created: !!timestamp '2016-03-25 07:23:00'
+image: /media/images/blog/2016/ELK.png
+tags:
+    - Data analysis
+    - Data visualization
+---
+{% block excerpt %}
+{% mark excerpt %}
+Nowadays,all kinds of applications and systems logs are very valuable for us,we can analysis the logs get valuable informations and make the right business decisions.But usually the logs distributed here and there across the system and the content of logs is usually unstructured,so its quite diffcult to analyze logs.
+[Elasticsearch]() along with [Logstash]() and [Kibana]() are both excellent products of [elastic](),they can use them together to help us index,search and analyze our data.
+so I will use nginx access logs to introduce ELK.
+{% endmark %}
+{% endblock %}
+
+#Logstatsh
+Logstatsh is a data pipeline that can efficiently process a growing list of log,event and other unstructred data source realtime, and route the formatted data to various downstreams.you can route the data to Elasticsearch,so the data can be used to do analysis. you can also store the data to MongoDB or archiving data to HDFS or S3. by installing some plugins you can also sent these data to monitoring system like Datadog.
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/logstash_image.png">
+</figure>
+
+###installing
+to install Logstash, Java7 or later required. you can download the package from [here](https://www.elastic.co/downloads/logstash),after download package and unzipp it you can run below comands to test if Logstash install successfully.
+{% syntax shell %}
+cd logstash-{your version}
+bin/logstash -e 'input { stdin { } } output { stdout {} }' 
+# -e enable to specify a configuration directly from the command line 
+# This pipeline takes input from the standard input and move that input to standard output
+{% endsyntax %}
+if installed successfully , you can type `hello world` and you should see below output
+{% syntax shell %}
+hello world
+2013-11-21T01:22:14.405+0000 0.0.0.0 hello world
+{% endsyntax %}
+
+###Pipeline
+A Logstash pipeline in most use cases has one or more input and output and filter plugins ,the Logstash configuration file defines the `Logstash pipeline`.When you start a Logstash instance , use `-f {path/to/file}` option to specify the configuration file that defines that instance's pipeline , the `input` and `output` filter is two required elements, and the `filter` is the optional element
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/basic_logstash_pipeline.png">
+</figure>
+[input plugins](https://www.elastic.co/guide/en/logstash/current/input-plugins.html) enables a special source of events to be read by Logstash.
+[output plugin](https://www.elastic.co/guide/en/logstash/current/output-plugins.html) sends event data to a particular destination.
+[filter plugin](https://www.elastic.co/guide/en/logstash/current/filter-plugins.html) performs intermediary processing on an event. 
+
+lets take a example about using Logstash pipeline to anaylyze the nginx access log
+{% syntax shell %}
+bin/logstash -f conf/access_log.conf --configtest  # tell the Logstash where to load input,output and filter plugin
+{% endsyntax %}
+and in `access_log.conf` , you can add configurations about pipeline. But we need to tell how to parse our logs, and this part we need add a 
+pattern file
+{% syntax shell %}
+$ mkdir /etc/logstash/patterns
+$ vi /etc/logstash/patterns/nginx
+NGINX_ACCESS %{IPORHOST:clientip} %{NGUSER:ident} %{NGUSER:auth} \[%{HTTPDATE:timestamp}\] "%{WORD:verb} %{URIPATHPARAM:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response} (?:%{NUMBER:bytes}|-) (?:"(?:%{URI:referrer}|-)"|%{QS:referrer}) %{QS:agent}
+{% endsyntax %}
+
+{% syntax shell %}
+input {
+    file {
+        type => "nginx_access"
+        path => "/path/to/your/access/log"
+        start_position => beginning 
+        ignore_older => 0 
+    }
+}
+filter {
+	if [type] == "nginx_access" {
+	    grok {
+	        patterns_dir => "/etc/logstash/patterns"
+	        match => { "message" => "%{NGINX_ACCESS}"} 
+	        #you can add additional field by 'add_field',or remove field by 'remove_field'
+	    }
+	    geoip {
+	        	source => "clientip"
+	     }
+    }
+}
+output {
+    elasticsearch {
+    }
+}
+{% endsyntax %}
+the above Logstash use `/path/to/your/access/log` as the input . and in order to process the entire file , we need to set `start_position` beginning, otherwise it will only monitor for new information , like unix `tail -f` command. and the default behavior of file input plugin will ignore information whose last modification is greater than 86400s, so my files much older ,so I not ignore these informations.
+
+we use [grok](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html) as the filter plugin,it can easily parse arbitrary text and structure it. in order to structure nginx acess log , we need provide a pattern file for grok to use ,and then use the pattern to parse the input, after processing we have structure data like below
+{% syntax shell %}
+{
+"clientip" : "83.149.9.216",
+"ident" : ,
+"auth" : ,
+"timestamp" : "04/Jan/2015:05:13:42 +0000",
+"verb" : "GET",
+"request" : "/presentations/logstash-monitorama-2013/images/kibana-search.png",
+"httpversion" : "HTTP/1.1",
+"response" : "200",
+"bytes" : "203023",
+"referrer" : "http://semicomplete.com/presentations/logstash-monitorama-2013/",
+"agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.77 Safari/537.36"
+}
+{% endsyntax %}
+
+now the logs has broken to specific fields ,we can configure to index the data into an Elasticsearch cluster
+{% syntax shell %}
+output {
+    elasticsearch {
+    }
+}
+{% endsyntax %}
+the above cofiguration assuems Logstash and Elasticsearch to be running  on the same instance , you can specify a remote Elasticsearch instance using `hosts` configuration like `hosts => "es-machine:9092"`.Logstash will use http protocol to connect Elasticsearch.
+
+And by now we have finish the basic configuration of Logstash, it will process log file from `input` parse each line of log and route the structured data to Elasticsearch. you can verify the configuration , running below comannds
+{% syntax shell %}
+bin/logstash -f first-pipeline.conf --configtest   #configtest means just test if configurations have any errors
+{% endsyntax %}
+and you can start the Logstash by run following commands
+{% syntax shell %}
+bin/logstash -f first-pipeline.conf
+{% endsyntax %}
+
+###File beat 
+By now we just process a single file from the same server with Logstash,what about we want process other server's logs? [filebeat](https://github.com/elastic/beats/tree/master/filebeat) is just the tool to solve this problem.
+
+The filebeat client is a lightweight, resource-friendly tool that collects logs from files on the server and forwards these logs to your Logstash instance for processing. The Filebeat client uses the secure Beats protocol to communicate with your Logstash instance.
+Default Logstash configuration includes the Beats input plugin, which is designed to be resource-friendly. To install Filebeat on your data source machine, download the appropriate package from the Filebeat [product page](https://www.elastic.co/downloads/beats/filebeat).
+edit `filebeat.yml` configuration file
+{% syntax shell %}
+filebeat:
+  prospectors:
+    -
+      paths:
+        - "/path/to/log"       # the log path
+      fields:
+        type: syslog
+output:
+  logstash:
+    hosts: ["localhost:5043"]	# usually , filebeat and logstash run at different server
+  tls:
+    certificate: /path/to/ssl-certificate.crt 		#path to the ssl certificate for the Logstash instancce.
+    certificate_key: /path/to/ssl-certificate.key
+    certificate_authorities: /path/to/ssl-certificate.crt
+    timeout: 15
+{% endsyntax %}
+and now we can configure the Logstash confgurations to use Filebeat input plugin in our `access_log.conf`
+add below lines in `input` section
+{% syntax shell %}
+beats {
+    port => "5043"
+    ssl => true
+    ssl_certificate => "/path/to/ssl-cert" 	#path to the ssl certificate that the Logstash instance use to authenticate itself to Filebeat
+    ssl_key => "/path/to/ssl-key" 			# path to the key for ssl certificate
+}
+{% endsyntax %}
+
+
+
+
+
+
+
