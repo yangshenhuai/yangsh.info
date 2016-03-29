@@ -151,6 +151,83 @@ beats {
 }
 {% endsyntax %}
 
+#ElasticSearch
+ElasticSearch is a highly scalable open-source full-text search and analytics engine.It allows your to store ,search and analyze big volumes of data quickly in near real time(slightly latency from the time you index the document untile it becomes searchable).It can be used as the underlying engine/technology that powers applications that have complex search features and requirements.
+-   you can use ElasticSearch as the storage of your application and provide search/autocomplete suggestion for them.
+-   you can collect the log from all your servers and analyze the data to look for the trends statistics, summarizations.
+-   you can even use it as alert platform which  will sent alert message when expect thing happens.
+
+-   `cluster` is the collection of one or more nodes(servers) that together holds the server and provide indexing and searching across all nodes ,each one should have a unique cluster name(default is elasticsearch).
+-   `node` is the single server that part of `cluster` ,store the data and participate in cluster's index,search capabilities, a node also need a name(default will random Marvel character name) , you can configure which cluster a node belongs to(by default it belongs to elasticsearch)
+-   `index` is the collection of data from the same source , for example there's a index for your nginx access log and another index for system logs
+-   `Document` is the basic unit of the index, for example a line in access log
+-   `Shards and Replicas` if your have too many Document in the index, you can shard the the index into multiple pieces called shards , each shard is fully-functional and independent index, and these shards can distribute in different nodes ,thus shards can allow you to horizontally split/scale your content volume , and parallelize operations across shards so can increse the performance , the mechanics of how shards distributed and how its documents are aggreate back is managed by ElasticSearch itself.
+if your have too many nodes, there's maybe a failure node anytime, so you need `Replica` , it can provide high availability
+each index can be split into multiple shards and be replicated zero(no replicas) or more times. Once replicated,each index will have primary shards(original shards) and replica shards(copied shards), you can define shards and replicas when create the index.
+
+###Installation
+you also need Java7 or later to run ElasticSearch, you can just download from [here](https://www.elastic.co/downloads),
+after download latest version of Elasticsearch then extract it then you can run below commands to check if install successfully
+{% syntax shell %}
+cd elasticsearch-{your version}/bin
+./elasticsearch
+{% endsyntax %}
+if everything goes well , you should see below output
+{% syntax shell %}
+./elasticsearch
+[2014-03-13 13:42:17,218][INFO ][node           ] [New Goblin] version[2.2.1], pid[2085], build[5c03844/2014-02-25T15:52:53Z]
+[2014-03-13 13:42:17,219][INFO ][node           ] [New Goblin] initializing ...
+[2014-03-13 13:42:17,223][INFO ][plugins        ] [New Goblin] loaded [], sites []
+[2014-03-13 13:42:19,831][INFO ][node           ] [New Goblin] initialized
+[2014-03-13 13:42:19,832][INFO ][node           ] [New Goblin] starting ...
+[2014-03-13 13:42:19,958][INFO ][transport      ] [New Goblin] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/192.168.8.112:9300]}
+[2014-03-13 13:42:23,030][INFO ][cluster.service] [New Goblin] new_master [New Goblin][rWMtGj3dQouz2r6ZFL9v4g][mwubuntu1][inet[/192.168.8.112:9300]], reason: zen-disco-join (elected_as_master)
+[2014-03-13 13:42:23,100][INFO ][discovery      ] [New Goblin] elasticsearch/rWMtGj3dQouz2r6ZFL9v4g
+[2014-03-13 13:42:23,125][INFO ][http           ] [New Goblin] bound_address {inet[/0:0:0:0:0:0:0:0:9200]}, publish_address {inet[/192.168.8.112:9200]}
+[2014-03-13 13:42:23,629][INFO ][gateway        ] [New Goblin] recovered [1] indices into cluster_state
+[2014-03-13 13:42:23,630][INFO ][node           ] [New Goblin] started
+{% endsyntax %}
+from log you can see the node `New Goblin` is started and its the master of this single cluster.
+and it also start a restful service on port 9200.  
+
+you  can also run the Elastic search as daemon just add `-d` when start it, and also your may want to write the PID of ElasticSearch when its run in backgroud, then you need to add `-p pid` then it will create a file(named pid ,you can also change it to something else) and store the pid in that file ,then later you can kill it by run below commands
+{% syntax shell %}
+kill `cat pid` 
+{% endsyntax %}
+
+###API
+once ElasticSearch startup , it will provide restful service on port 9220. you can simply use any tool to test these APIs
+{% syntax shell %}
+curl 'localhost:9200/_cat/health?v'  #cluster health.
+epoch      timestamp cluster       status node.total node.data shards pri relo init unassign
+1394735289 14:28:09  elasticsearch green           1         1      0   0    0    0        0
+
+
+curl 'localhost:9200/_cat/nodes?v'  #nodes 
+host         ip        heap.percent ram.percent load node.role master name
+mwubuntu1    127.0.1.1            8           4 0.00 d         *      New Goblin
+
+
+curl -XPUT 'localhost:9200/customer?pretty'  #create a index
+{
+  "acknowledged" : true
+}
+
+curl 'localhost:9200/_cat/indices?v'        # indices
+health index    pri rep docs.count docs.deleted store.size pri.store.size
+yellow customer   5   1          0            0       495b           495b
+{% endsyntax %}
+
+and there're also APIs can put the document in the index or [search](https://www.elastic.co/guide/en/elasticsearch/reference/current/search.html) APIs, fortunately we don't call these API ourself most of case , we can use `Logstash` to create index and document and use `Kibana` to search data for us.
+
+#Kibana
+
+
+
+       
+
+
+
 
 
 
