@@ -106,7 +106,10 @@ output {
     }
 }
 {% endsyntax %}
-the above cofiguration assuems Logstash and Elasticsearch to be running  on the same instance , you can specify a remote Elasticsearch instance using `hosts` configuration like `hosts => "es-machine:9092"`.Logstash will use http protocol to connect Elasticsearch.
+the above cofiguration assuems Logstash and Elasticsearch to be running  on the same instance , you can specify a remote Elasticsearch instance using `hosts` configuration like `hosts => "es-machine:9092"`.Logstash will use http protocol to connect Elasticsearch, and you can also define which index to write events to ,the default value is "logstash-%{+YYYY.MM.dd}"
+ 
+
+
 
 And by now we have finish the basic configuration of Logstash, it will process log file from `input` parse each line of log and route the structured data to Elasticsearch. you can verify the configuration , running below comannds
 {% syntax shell %}
@@ -153,6 +156,7 @@ beats {
 
 #ElasticSearch
 ElasticSearch is a highly scalable open-source full-text search and analytics engine.It allows your to store ,search and analyze big volumes of data quickly in near real time(slightly latency from the time you index the document untile it becomes searchable).It can be used as the underlying engine/technology that powers applications that have complex search features and requirements.
+
 -   you can use ElasticSearch as the storage of your application and provide search/autocomplete suggestion for them.
 -   you can collect the log from all your servers and analyze the data to look for the trends statistics, summarizations.
 -   you can even use it as alert platform which  will sent alert message when expect thing happens.
@@ -221,12 +225,47 @@ yellow customer   5   1          0            0       495b           495b
 and there're also APIs can put the document in the index or [search](https://www.elastic.co/guide/en/elasticsearch/reference/current/search.html) APIs, fortunately we don't call these API ourself most of case , we can use `Logstash` to create index and document and use `Kibana` to search data for us.
 
 #Kibana
+[Kibana](https://www.elastic.co/products/kibana) is a analytics and visualization platform , and it can be integrate with `Elasticsearch` Seamless
+, and provide sophisticated analytics, and its very easy to setup.
+
+###Installation
+to get Kibana, run below commands
+
+-   download the [kibana](https://www.elastic.co/downloads/kibana)
+-   Extract the .zip or .tar.gz archive file
+-   you can edit <em>config/kibana.yml</em> if you want set <em>elasticsearch.url</em>(you can ignore this if you Elasticsearch run on same server with default port)
+-   run kibana from install directory : bin/kibana,and after it start up,you can open localhost:5601 in your broswer.
 
 
+###Index Patterns
+Index pattern is a string with optional wildcards that can match multiple indices.For example in comman logging use case, a typical index name contains the date in MM-DD-YYYY format. Open `localhost:5601` in browser , click the `setting` tab ,then `indcies` tab , click `Add New` to define a new index pattern. and since the default index logstash write to ElasticSearch is "logstash-%{+YYYY.MM.dd}" , so you can  input logstash-* as the index pattern,and make sure the `index contains time-based events` is checked ,since our log is time-based.
 
-       
+###Discover Data
+After index pattern defined, you click `Discover` tab,and you should see something like below pic
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/kibana_discover.png">
+</figure>
+there's a search box that enables you to search , you can check [query syntax](http://www.elastic.co/guide/en/elasticsearch/reference/current//query-dsl-query-string-query.html#query-string-syntax) to learn more about how to search.
+and you can also select which index you want to search. you can construct the searchs by using the filed and the values your are interested in , and you can also narrow the display to only specific fields of interests as show in below pics,so if you have a transactionId in your system, you don't need go to server to grep related log ,just search in kibina, and you will get all the releated messages.
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/kibana_search.png">
+</figure>
 
+###Visualize
+besides search data , you can visualize you data using visulize tab, click Visualize tab to start.
+Visulizations depend on Elasticsearch aggregations in two different types :`bucket` aggregation and `metric` aggregations.
+A bucket aggregation sorts your data according to criteria you specify.For example the timestamp in access log. there's a very detailed [tutorial](https://www.elastic.co/guide/en/kibana/current/tutorial-visualizing.html) in elastic about the visualize, you can check it out.
 
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/kibana_visulization.png">
+</figure>
+
+###Dashbord
+After you saved your visualizes, you can then add these visulizes to your dashboard , the process like below 
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/kibana_dashboard.gif">
+</figure>
+you can customizing dashboards elements very easily ,and you can also add some configuration to automatically refreshing the page, you can check [offical document](https://www.elastic.co/guide/en/kibana/current/dashboard.html) for more information.
 
 
 
