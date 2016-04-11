@@ -1,0 +1,76 @@
+---
+title: "Secured Socket Layer(SSL) and Transport Layer Security(TLS)"
+created: !!timestamp '2016-04-09 07:23:00'
+image: /media/images/blog/2016/ssl.png
+tags:
+    - Security
+---
+{% block excerpt %}
+{% mark excerpt %}
+<em>Transport Layer Security (TLS)  / Secure Sockets Layer (SSL) </em> is the mechanism to provide private ,secured and reliable communication over the untrusted network. it is most widely provide secure <em>HTTPS</em> for internet communications between the browers and the servers.TLS/SSL enables server authentication, client authentication, data encryption, and data integrity over internet.The disvatange of SSL is the performance,However in recent days with fast internet and hardware , most of popular sites(Google,Facebook,Twitter) use HTTPS now.
+{% endmark %}
+{% endblock %}
+
+###key terminologies
+-	Encryption: is a process of encoding information which is sent from one computer to another in such a way that unauthorized persons cannot get access to the original data.
+-	Identification:is a process through which one system confirms the identify of another person/entity
+-	Authentication: a process of verify the credentials of the person or the system
+-	Authorized: a process which the pricipal is either grated access or disallowed to proteced resources,only trusted pricipal can be grated secure access.
+
+
+###difference between SSL and TLS
+there are some slight differences between SSL3.0 and TLS1.0.TLS is the successor to the SSL,but TLS 1.2 cannot be interchangeable with SSL 3.0. 
+there're mainly below enhancements TLS to SSL
+-	The keyed-Hashing for Message Authentication Code(HMAC) algorithm replaces the SSL Message Authentication Code(MAC) algorithm.
+-	TLS is standardized in [RFC 2246](http://www.rfc-base.org/rfc-2246.html)
+-	new alerts messages are added
+-	in TLS, not always necessary to include certifications all the way back to the root CA
+
+###Why encryption needed
+If we don't use encryption then the critical information can be stolen by the unauthorised persons who might hijack the session between the client and server communication
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/UnEncrypted_Message.jpg">
+</figure>
+
+when we  encrypt the critical information , the hackers who don't have the key to decrypt messsage only see the garbage.
+
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/Encrypted_Message.jpg">
+</figure>
+
+#How it works
+There're several steps before the actual encrypted message is sent. The first process starts with SSL Handshake(establishing secured connection between the client and the server ).This processs requires several handshake messages to be communicated between server and client.Once the handshake is completed , the encypted messages are commnuicated between client and server.
+
+### 1.Client and server aggres on the medium of encryption
+
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/SSL_Handshake-Step-1.jpg">
+</figure>
+
+### 2.Server sends a certificate message to the client
+-	server sends Hello message to the client.
+-	server sends Certificate message to the client which consist of server's public key
+-	If server find out it need Mutual SSL authentication(server also need verify client), the server will request client's certificate in Certificate Request message.
+-	Before the client computer requests to start encrpytion the server concludes its part of negotiation with ServerHelloDone message
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/Mutual_SSL_Handshake-Step-2.jpg">
+</figure>
+
+### 3. Client computer requests to start encryption
+-	Client response to the server with Certificate message,which contains the client certificate(If server request mutual authentication)
+-	Client then sends the session key information which is encrypted with server's public key in the Client Key Exchange message
+-	Client sends a Certificate Verify message to let the server know it owns the sent certificate.Both client and server calculates the master secret code and in future ,the master code is used to encrypt the message between the client and server
+-	And the client requests finish which finally will request the server to start the encryption.
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/Mutual_SSL_Handshake-Step-3.jpg">
+</figure>
+
+### 4.Server confirms to start the encryption
+Server sends Change Cipher Spec message to activate the previously negotiated options for all future request it will send.
+Server then sends the Finished message to the client and requests it to check the newly activated options.When the finished message is delivered it is sent in encrypted mode.
+<figure class="illustration img-thumbnail"  style="width: 60%;">
+    <img src="/media/images/blog/2016/SSL_Handshake-Step-41.jpg">
+</figure>
+
+### 5.the message will be transferred encrypted. 
+Now the client and server communicates securely through encrypted message only
