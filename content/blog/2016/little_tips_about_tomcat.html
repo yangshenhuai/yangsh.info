@@ -1,0 +1,62 @@
+---
+title: "Little tips about tomcat"
+created: !!timestamp '2016-07-05 22:34:00'
+image: /media/images/blog/2016/tomcat.png
+tags:
+    - web server
+    - tips
+---
+{% block excerpt %}
+{% mark excerpt %}
+Recently I have used the tomcat for the project (last time I used it was like five years ago...) , and I find some little tips very useful , also its may be very basic usage of tomcat to you.
+{% endmark %}
+{% endblock %}
+
+#set some env variable specific for tomcat
+
+just create a new file `setenv.sh`(`setenv.bat` in windows), and declare env variable in that file
+{% syntax shell %}
+spring.active.profiles=PROD
+{% endsyntax %}
+in this way , you can config variables just for tomcat , and it wouldn't mess up with your system-range variables
+
+#set up your application as the default app
+
+suppose your have a web app(war package or just a web content folder) named A(A.war or just a folder name A)
+your have to access your app by request http://host:port/A/ . 
+
+now your want to access your app by request http://host:port/ ( A as the default application ).
+
+there're several ways to achieve this [tomcat how-to](https://wiki.apache.org/tomcat/HowTo#How_do_I_make_my_web_application_be_the_Tomcat_default_application.3F)
+
+one of the best way I think is this
+- Place your war file outside of CATALINA_BASE/webapps (it must be outside to prevent double deployment).
+- Place a context file named ROOT.xml in CATALINA_BASE/conf/<engine name>/<host name> (normally  CATALINA_BASE/conf/Catalina/localhost).
+{% syntax shell %}
+<Context docBase="{path_to_your_soft_link_file}" allowLinking="true" reloadable="true"/>
+{% endsyntax %}
+
+The best way is to create a softlink somewhere(need allowLinking="true") so when deploy a new package  don't need  to change this ROOT.xml any more , just make the softlink point to new file and tomcat will auto reload the application (reloadable = true )
+
+#start tomcat when system start up
+
+can configure tomcat auto start up when system start up . in centos just edit `/etc/rc.d/rc.local` and add one more line in rc.local
+{% syntax shell %}
+CATALINA_BASE/bin/startup.sh
+{% endsyntax %}
+
+but if just this , you will find out the tomcat start using root account
+
+if you just want specific user to start up tomcat please change the line as below
+{% syntax shell %}
+#use tomcat user to start tomcat
+su tomcat CATALINA_BASE/bin/startup.sh
+{% endsyntax %}
+
+
+
+
+
+
+
+
