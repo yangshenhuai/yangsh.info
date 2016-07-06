@@ -55,8 +55,29 @@ su tomcat CATALINA_BASE/bin/startup.sh
 
 
 
+#JMX monitoring
 
+suppose your have a working tomcat running in your test server, you may want to do some performance test and monitor the heap memory usage at the same time.
+To add JMX monitoring just add below configuration to your `setenv.sh`
+{% syntax shell %}
+export CATALINA_OPTS=" $CATALINA_OPTS -Dcom.sun.management.jmxremote"
+export CATALINA_OPTS=" $CATALINA_OPTS -Dcom.sun.management.jmxremote.port=%my.jmx.port%"
+export CATALINA_OPTS=" $CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+export CATALINA_OPTS=" $CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=true"
+export CATALINA_OPTS=" $CATALINA_OPTS -Dcom.sun.management.jmxremote.password.file=../conf/jmxremote.password"
+export CATALINA_OPTS=" -Dcom.sun.management.jmxremote.access.file=../conf/jmxremote.access"
+{% endsyntax %}
 
-
+and edit `jmxremote.access`
+{% syntax shell %}
+monitorRole readonly
+controlRole readwrite
+{% endsyntax %}
+finally edit $CATALINA_BASE/conf/jmxremote.password (this file must be readonly for user which run tomcat , if its the same user which create this file , you can run chmod 600 jmxremote.password )
+{% syntax shell %}
+monitorRole password
+controlRole password
+{% endsyntax %}
+after restart tomcat , you can connect tomcat with jconsole.
 
 
