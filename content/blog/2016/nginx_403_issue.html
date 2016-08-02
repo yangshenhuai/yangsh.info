@@ -29,7 +29,7 @@ server {
         index  index index.html index.htm;
     }
 }
-{% endshell %}
+{% endsyntax %}
 when your request `ip:port/a/` ,
 nginx will first check if `/var/www/your-site/index` exists if not it will try `/var/www/your-site/index.html`
 and finally `/var/www/your-site/index.htm` , and if still not find nginx will throw exception.
@@ -39,7 +39,7 @@ and finally `/var/www/your-site/index.htm` , and if still not find nginx will th
 If it still 403, you can check if SELinux cause this , run below command
 {% syntax shell %}
 sestatus
-{% endshell %}
+{% endsyntax %}
 
 if the output like below , it means that selinux is enabled
 {% syntax shell %}
@@ -49,10 +49,10 @@ Current mode:                   enforcing
 Mode from config file:          enforcing
 Policy version:                 21
 Policy from config file:        targeted
-{% endshell %}
+{% endsyntax %}
 
 then you need run below command to disable it
 {% syntax shell %}
 setenforce Permissive
-{% endshell %}
+{% endsyntax %}
 and for more information about this solution check out [this](http://stackoverflow.com/questions/22586166/why-does-nginx-return-a-403-even-though-all-permissions-are-set-properly)
