@@ -1,7 +1,7 @@
 ---
 title: "LeetCode--Reverse String"
 created: !!timestamp '2016-08-02 08:40:00'
-image: /media/images/blog/2016/reversed_words.jpg
+image: /media/images/blog/2015/speedometer.jpg
 tags:
     - LeetCode
     - Algorithm
@@ -23,7 +23,7 @@ Given "Hello" return "olleH" e.g.
 
 its quite easy at first look , so below is my first submission
 
-```java
+{% syntax java %}
 public class Solution {
     public String reverseString(String s) {
         StringBuffer sb = new StringBuffer(); // the wrapper for the result String
@@ -34,7 +34,7 @@ public class Solution {
         return  sb.toString();
     }
 }
-```
+{% endsyntax %}
 
 Obviously the function is right , and it takes 6ms . 
 
@@ -42,16 +42,16 @@ After I submitted , I  go to check out other people's solution ,that's the reaso
 
 ##creating method using StringBuilder
 
-```java
+{% syntax java %}
 public class Solution {
     public String reverseString(String s) {
         return  new StringBuilder(s).reverse().toString();
     }
 }
-```
+{% endsyntax %}
 
 ##Classic method by swapping first and last
-```java
+{% syntax java %}
 public class Solution {
     public String reverseString(String s) {
         char[] word = s.toCharArray();
@@ -67,10 +67,11 @@ public class Solution {
         return new String(word);
     }
 }
-```
+{% endsyntax %}
+
 
 ## recursive solution(python)
-```python
+{% syntax python %}
 class Solution(object):
     def reverseString(self, s):
         """
@@ -81,5 +82,6 @@ class Solution(object):
             return s
         n=len(s)
         return self.reverseString(s[n//2:])+self.reverseString(s[:n//2])
-```
+{% endsyntax %}
+
 
