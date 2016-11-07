@@ -1,0 +1,87 @@
+---
+title: "LeetCode--Reverse String"
+created: !!timestamp '2016-08-02 08:40:00'
+image: /media/images/blog/2015/speedometer.jpg
+tags:
+    - LeetCode
+    - Algorithm
+---
+
+{% block excerpt %}
+{% mark excerpt %}
+[LeetCode](https://leetcode.com/) is a good place to imporve your algorithm and coding skills , I am start with a very simple case , [reverse string](https://leetcode.com/problems/reverse-string/).
+{% endmark %}
+{% endblock %}
+
+#reverse String
+
+this is probaly the easist one in leetcode , you need write the function that 
+
+take a string as input and return the string reversed , 
+
+Given "Hello" return "olleH" e.g.
+
+its quite easy at first look , so below is my first submission
+
+{% syntax java %}
+public class Solution {
+    public String reverseString(String s) {
+        StringBuffer sb = new StringBuffer(); // the wrapper for the result String
+        char[] arr = s.toCharArray();  // convert the string to the char array
+        for (int i=arr.length -1 ; i>=0;i--) {
+            sb.append(arr[i]);        // construct the new string from the last to the first
+        }
+        return  sb.toString();
+    }
+}
+{% endsyntax %}
+
+Obviously the function is right , and it takes 6ms . 
+
+After I submitted , I  go to check out other people's solution ,that's the reason I like `leetcode` , you can always learn something from other people
+
+##creating method using StringBuilder
+
+{% syntax java %}
+public class Solution {
+    public String reverseString(String s) {
+        return  new StringBuilder(s).reverse().toString();
+    }
+}
+{% endsyntax %}
+
+##Classic method by swapping first and last
+{% syntax java %}
+public class Solution {
+    public String reverseString(String s) {
+        char[] word = s.toCharArray();
+        int i = 0;
+        int j = s.length() - 1;
+        while (i < j) {
+            char temp = word[i];
+            word[i] = word[j];
+            word[j] = temp;
+            i++;
+            j--;
+        }
+        return new String(word);
+    }
+}
+{% endsyntax %}
+
+
+## recursive solution(python)
+{% syntax python %}
+class Solution(object):
+    def reverseString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        if len(s)<=1:
+            return s
+        n=len(s)
+        return self.reverseString(s[n//2:])+self.reverseString(s[:n//2])
+{% endsyntax %}
+
+

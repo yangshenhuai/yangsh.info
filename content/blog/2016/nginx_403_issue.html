@@ -1,0 +1,58 @@
+---
+title: "how to fix nginx 403 issue"
+created: !!timestamp '2016-07-24 22:34:00'
+image: /media/images/blog/2016/NGINX.png
+tags:
+- web server
+- tips
+---
+{% block excerpt %}
+{% mark excerpt %}
+Some times you will meet nginx 403 issue,this is how I resolve it with the help of mighty Google!
+{% endmark %}
+{% endblock %}
+
+#1. check out if your permission is correct
+Let's say you put your site content in `/var/www/your-site` , and you need check if `/` , `/var` ,`/var/www`
+'/var/www/your-site' have the `x` permission for user `nginx` (better be 755) , and if the content of your site  have the permission
+of 644
+
+
+#2. check if index page exist
+if your think the permission is ok , you can check if index page exist .
+if you configure your site like below
+{% syntax shell %}
+server {
+...
+    location /a {
+        root  /var/www/;
+        index  index index.html index.htm;
+    }
+}
+{% endsyntax %}
+when your request `ip:port/a/` ,
+nginx will first check if `/var/www/your-site/index` exists if not it will try `/var/www/your-site/index.html`
+and finally `/var/www/your-site/index.htm` , and if still not find nginx will throw exception.
+
+#3. check SELinux
+
+If it still 403, you can check if SELinux cause this , run below command
+{% syntax shell %}
+sestatus
+{% endsyntax %}
+
+if the output like below , it means that selinux is enabled
+{% syntax shell %}
+SELinux status:                 enabled
+SELinuxfs mount:                /selinux
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy version:                 21
+Policy from config file:        targeted
+{% endsyntax %}
+
+then you need run below command to disable it
+{% syntax shell %}
+setenforce Permissive
+{% endsyntax %}
+and for more information about this solution check out [this](http://stackoverflow.com/questions/22586166/why-does-nginx-return-a-403-even-though-all-permissions-are-set-properly)
