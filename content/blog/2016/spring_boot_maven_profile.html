@@ -1,0 +1,32 @@
+---
+title: "Use maven profile with Spring Boot"
+created: !!timestamp '2016-11-07 09:23:00'
+image: /media/images/blog/2016/ELK.jpg
+tags:
+    - Data analysis
+    - Data visualization
+---
+{% block excerpt %}
+{% mark excerpt %}
+Normally you can set `spring.profiles.active` `Environment` property to specify which profiles are active [see here](http://docs.spring.io/autorepo/docs/spring-boot/current/reference/html/boot-features-profiles.html)
+But its also possiable to use exising maven profiles
+{% endmark %}
+{% endblock %}
+
+#Maven profiles
+ you can expand properties from the maven use the resource filtering, If you use the `spring-boot-starter-parent` , you can then refer to your maven project properties via `@..@` placeholders
+        like below
+{% syntax shell %}
+app.encoding=@project.build.sourceEncoding@
+{% endsyntax %}
+      see more from [here](http://docs.spring.io/autorepo/docs/spring-boot/current/reference/html/howto-properties-and-configuration.html#howto-change-configuration-depending-on-the-environment)
+
+
+
+
+
+
+
+
+
+
