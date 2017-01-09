@@ -1,7 +1,7 @@
 ---
 title: "A Byte Of Go(1)"
 created: !!timestamp '2017-01-08 23:21:00'
-image: /media/images/blog/2017/go_lang_1.jpg
+image: /media/images/blog/2017/go_lang_2.jpg
 tags:
     - Go
 ---
@@ -20,7 +20,7 @@ Go lang is open-source , so you can dowload from its [offical website](https://g
 Here is a hello world program with go.
 this program is in `main` package , by convention , the package name is same as the last element of the import path.
 
-        Here import `fmt` package.
+Here import `fmt` package.
 
 package `fmt` implements formatted I/O with functions analogous to C's printf and scanf.
 
@@ -34,7 +34,7 @@ fmt.Println("Hello world")
 
 
 #Imports and Exports
-    In `Hello world`, you can see how to import a package, you can import multiple packages like below
+In `Hello world`, you can see how to import a package, you can import multiple packages like below
 {% syntax shell %}
 import(
     "fmt",
@@ -110,4 +110,44 @@ fmt.Println(s,m)
 {% endsyntax %}
 
 
-#Variables(TODO)
+#Variables
+use `var` declare the variables , just like function argument list, the type is last
+{% syntax shell %}
+package main
+import "fmt"
+var s string    //declare as a string
+var s1,s2 string = "abc","CDE" //can incude initilizers one per variable
+func main() {
+    var i int
+    fmt.Println(s,i)
+    var j,k  =  100,true // the type can be omitted, the variable will take the type of the initializer
+    fmt.Println(s1,s2,j,k)
+
+    short_variable := 100 //:= short assiginment statement instead of var
+    fmt.Println(short_variable)
+}
+{% endsyntax %}
+
+#Types
+Go is the strongly-typed language like java , it has some basic types like `boolean`,`string`,`int`,
+`byte`,`float32`,`float64` etc. 
+
+Variables declared without an explicit initial value are given their zero value, `0` for numeric types
+`false` for boolean type,`""` for strings.
+
+`T(v)` can convert the type `v` to the type `T`. assignments in Go require an explicit conversion if the type is different!
+{% syntax shell %}
+i:=32
+f:=float64(i)
+{% endsyntax %}
+
+`const` are used to declared the constants , you must give the value when declare the contants
+
+
+
+
+
+
+
+
+
