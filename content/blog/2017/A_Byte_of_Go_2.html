@@ -46,6 +46,46 @@ func main(){
 }
 {% endsyntax %}
 
+#If
+if(else) is the control flow in Go , the usage is very similar with java.
+switch usage is also similar to java
+{% syntax shell %}
+package main
+import (
+	"fmt"
+)
+func compare(x int,y int) {
+	if squx := x*x ; y>squx {
+		fmt.Println("Bigger!")
+	}else if squx := x*x ; y<squx {
+		fmt.Println("Smaller!")
+	}else {
+		fmt.Println("Equals!")
+	}
+}
+func main() {
+	compare(2,3)
+	compare(3,10)
+	compare(4,16)
+}
+{% endsyntax %}
+
+
+#Defer
+A `defer` statement can defer the execution of the function , until the surrouding function returns, the deferred 	calls arguments are evaluated 
+but the function calls	is not executed until the surrounding functions returns
+{% syntax shell %}
+package main
+import "fmt"
+func defer_method(){
+	fmt.Println("derfer!")
+}
+func main() {
+	defer defer_method()
+	fmt.Println("hello") // the output is  hello derfer!
+}
+{% endsyntax %}
+
 
 
 
