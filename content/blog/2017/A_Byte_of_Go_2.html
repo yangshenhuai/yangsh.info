@@ -1,0 +1,56 @@
+---
+title: "A Byte Of Go(2)"
+created: !!timestamp '2017-01-11 16:15:00'
+image: /media/images/blog/2017/go_lang_2.jpg
+tags:
+    - Go
+---
+{% block excerpt %}
+{% mark excerpt %}
+Basic Loop , Control flow and Branching statements in Go.
+{% endmark %}
+{% endblock %}
+
+#For
+`for` is the only one looping construct in Go, the syntax is like below.
+
+`for {initial statement};{condition statement};{post statement}`
+
+{% syntax shell %}
+
+package main
+import "fmt"
+func main() {
+	for i:=0;i<10;i++ {
+		fmt.Println(i)
+	}
+}
+{% endsyntax %}
+
+you can also use the for just like `while` in java ,just remove the initial statements ,post statements and semicolons
+
+
+{% syntax shell %}
+package main
+
+import "fmt"
+
+func main(){
+	sum:=0
+	i := 0
+	for i<10{
+		sum = sum+i
+		i=i+1
+	}
+	fmt.Println(sum)
+}
+{% endsyntax %}
+
+
+
+
+
+
+
+
+
