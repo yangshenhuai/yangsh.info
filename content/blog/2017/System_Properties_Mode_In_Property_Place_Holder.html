@@ -16,7 +16,7 @@ PropertyPlaceholderConfigurer can help us to  avoid hard code any environment sp
 #PropertyPlaceholderConfigurer
 add below bean definition in your spring xml configuration
 
-{% syntax xml %}
+{% syntax java %}
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	<property name="location">
 		<value>database.properties</value>
@@ -24,7 +24,7 @@ add below bean definition in your spring xml configuration
 </bean>
 {% endsyntax %}
 and you can use it as below
-{% syntax xml %}
+{% syntax java %}
 	<bean id="dataSource"
 	class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 
@@ -35,11 +35,11 @@ and you can use it as below
 	</bean>
 {% endsyntax %}
 But in this way you can only get the value from properties. what if the value is dynamic assigned. you can add a property of PropertyPlaceholderConfigurer like below 
-{% syntax xml %}
+{% syntax java %}
 <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 {% endsyntax %}
 the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
-{% syntax xml %}
+{% syntax java %}
 SYSTEM_PROPERTIES_MODE_FALLBACK (default)
       Check system properties if not resolvable in the specified properties.
 SYSTEM_PROPERTIES_MODE_NEVER 
