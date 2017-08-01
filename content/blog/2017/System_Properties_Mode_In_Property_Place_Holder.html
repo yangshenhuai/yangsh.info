@@ -1,6 +1,6 @@
 ---
 title: "systemPropertiesModeName in Spring PropertyPlaceHolder"
-created: !!timestamp '2017-08-01 23:15:00'
+created: !!timestamp '2017-08-01 00:15:00'
 image: /media/images/blog/2015/lazare-clocks.jpg
 tags:
     - Java
@@ -16,25 +16,25 @@ PropertyPlaceholderConfigurer can help us to  avoid hard code any environment sp
 #PropertyPlaceholderConfigurer
 add below bean definition in your spring xml configuration
 
-<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-	<property name="location">
-		<value>database.properties</value>
-	</property>
-</bean>
+&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+	&lt;property name="location"&gt;
+		&lt;value&gt;database.properties&lt;/value&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;
 
 and you can use it as below
 
-	<bean id="dataSource"
-	class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-	</bean>
+&lt;bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+	&lt;property name="driverClassName" value="${jdbc.driverClassName}" /&gt;
+	&lt;property name="url" value="${jdbc.url}" /&gt;
+	&lt;property name="username" value="${jdbc.username}" /&gt;
+	&lt;property name="password" value="${jdbc.password}" /&gt;
+&lt;/bean&gt;
 
 But in this way you can only get the value from properties. what if the value is dynamic assigned. you can add a property of PropertyPlaceholderConfigurer like below 
 
-<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+&lt;property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/&gt;
 
 the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
 
