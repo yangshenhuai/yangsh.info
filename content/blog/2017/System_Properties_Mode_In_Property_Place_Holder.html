@@ -1,7 +1,7 @@
 ---
 title: "systemPropertiesModeName in Spring PropertyPlaceHolder"
 created: !!timestamp '2017-08-01 23:15:00'
-image: /media/images/blog/2017/go_lang_2.jpg
+image: /media/images/blog/2015/lazare-clocks.jpg
 tags:
     - Java
     - Spring
@@ -15,7 +15,6 @@ PropertyPlaceholderConfigurer can help us to  avoid hard code any environment sp
 
 #PropertyPlaceholderConfigurer
 add below bean definition in your spring xml configuration
-
 {% syntax java %}
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	<property name="location">
@@ -39,11 +38,14 @@ But in this way you can only get the value from properties. what if the value is
 <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 {% endsyntax %}
 the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
-{% syntax java %}
+
+
 SYSTEM_PROPERTIES_MODE_FALLBACK (default)
       Check system properties if not resolvable in the specified properties.
+
 SYSTEM_PROPERTIES_MODE_NEVER 
       Never check system properties.
+
 SYSTEM_PROPERTIES_MODE_OVERRIDE 
       Check system properties first, before trying the specified properties.so you can set you property dynamicly in your code using System.setProperty("key",value)
-{% endsyntax %}
+
