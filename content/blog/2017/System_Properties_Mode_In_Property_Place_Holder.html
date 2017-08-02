@@ -5,7 +5,6 @@ image: /media/images/blog/2015/lazare-clocks.jpg
 tags:
     - Java
     - Spring
-	- Tips
 ---
 {% block excerpt %}
 {% mark excerpt %}
@@ -26,9 +25,20 @@ add below bean definition in your spring xml configuration
 
 and you can use it as below
 
+{% syntax xml %}
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="${jdbc.driverClassName}" />
+	<property name="url" value="${jdbc.url}" />
+	<property name="username" value="${jdbc.username}" />
+	<property name="password" value="${jdbc.password}" />
+</bean>
+{% endsyntax %}
 
 But in this way you can only get the value from properties. what if the value is dynamic assigned. you can add a property of PropertyPlaceholderConfigurer like below 
-
+{% syntax xml %}
+<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+{% endsyntax %}
 
 the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
 
