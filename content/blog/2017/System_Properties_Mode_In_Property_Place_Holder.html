@@ -16,6 +16,14 @@ PropertyPlaceholderConfigurer can help us to  avoid hard code any environment sp
 #PropertyPlaceholderConfigurer
 add below bean definition in your spring xml configuration
 
+{% syntax xml %}
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="location">
+		<value>database.properties</value>
+	</property>
+</bean>
+{% endsyntax %}
+
 and you can use it as below
 
 
@@ -25,12 +33,11 @@ But in this way you can only get the value from properties. what if the value is
 the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
 
 
-SYSTEM_PROPERTIES_MODE_FALLBACK (default)
+`SYSTEM_PROPERTIES_MODE_FALLBACK` (default)
       Check system properties if not resolvable in the specified properties.
 
-SYSTEM_PROPERTIES_MODE_NEVER 
+`SYSTEM_PROPERTIES_MODE_NEVER` 
       Never check system properties.
 
-SYSTEM_PROPERTIES_MODE_OVERRIDE 
+`SYSTEM_PROPERTIES_MODE_OVERRIDE`
       Check system properties first, before trying the specified properties.so you can set you property dynamicly in your code using System.setProperty("key",value)
-
