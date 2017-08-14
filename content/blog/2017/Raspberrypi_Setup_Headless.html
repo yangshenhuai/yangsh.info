@@ -1,0 +1,39 @@
+---
+title: "setUp Raspberrypi headless"
+created: !!timestamp '2017-08-08 0:15:00'
+image: /media/images/blog/2017/raspberry-pi-logo.jpg
+tags:
+    - Raspberrypi
+---
+{% block excerpt %}
+{% mark excerpt %}
+[Raspberrypi](https://www.raspberrypi.org/) is a small computer, but it don't have screen.Here is how I configure my PI
+with a single ethernet cable, after this setup , you can login your PI using ssh from your computer.
+{% endmark %}
+{% endblock %}
+
+#What you need
+You will need a Raspberrypi, a SD card (and card reader) , an ethernet cable and a Wifi USB dongle	
+#Flash Respbian on the SD card
+you can use [Etcher](https://etcher.io/) to burn [Resbian](https://www.raspberrypi.org/downloads/raspbian/) to your card.
+and after that done , Insert the SD card into your PI,you are ready to rock
+#Ssh into your PI with cable
+Power on your PI, connect the PI with your router with a normal ethernet cable , and after 1 minute , try execute below command
+from the computer that connect to the same router 
+{% syntax shell %}
+ssh pi@raspberrypi.local
+(password:raspberrypi)
+{% endsyntax %}
+Bingo! your are in RPI now!
+#Config wifi
+Now let's config the wifi setting , so we can throw the ethernet cable away. in RPI add your wifi information in
+`/etc/wpa_supplicant/wpa_supplicant.conf`
+{% syntax shell %}
+network={
+    ssid="your-network-ssid-name"
+    psk="your-network-password"
+}
+{% endsyntax %}
+Attach the wifi USB dongle and unplug the ethernet cable, and reboot the RPI(power off and then power on)
+and wait 1 minute , try `ssh pi@raspberrypi.local`.
+Now you should be able to login with wifi

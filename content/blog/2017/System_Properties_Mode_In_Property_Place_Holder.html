@@ -1,0 +1,53 @@
+---
+title: "systemPropertiesModeName in Spring PropertyPlaceHolder"
+created: !!timestamp '2017-08-01 0:15:00'
+image: /media/images/blog/2015/lazare-clocks.jpg
+tags:
+    - Java
+    - Spring
+---
+{% block excerpt %}
+{% mark excerpt %}
+PropertyPlaceholderConfigurer can help us to  avoid hard code any environment specific configuration in spring configuration.
+{% endmark %}
+{% endblock %}
+
+#PropertyPlaceholderConfigurer
+add below bean definition in your spring xml configuration
+
+{% syntax xml %}
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="location">
+		<value>database.properties</value>
+	</property>
+</bean>
+{% endsyntax %}
+
+and you can use it as below
+
+{% syntax xml %}
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="${jdbc.driverClassName}" />
+	<property name="url" value="${jdbc.url}" />
+	<property name="username" value="${jdbc.username}" />
+	<property name="password" value="${jdbc.password}" />
+</bean>
+{% endsyntax %}
+
+But in this way you can only get the value from properties. what if the value is dynamic assigned. you can add a property of PropertyPlaceholderConfigurer like below 
+{% syntax xml %}
+<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+{% endsyntax %}
+
+the property systemPropertiesModeName determines the order in which properties are resolved, properties file versus system properties , it can have below values
+
+
+`SYSTEM_PROPERTIES_MODE_FALLBACK` (default)
+      Check system properties if not resolvable in the specified properties.
+
+`SYSTEM_PROPERTIES_MODE_NEVER` 
+      Never check system properties.
+
+`SYSTEM_PROPERTIES_MODE_OVERRIDE`
+      Check system properties first, before trying the specified properties.so you can set you property dynamicly in your code using System.setProperty("key",value)
