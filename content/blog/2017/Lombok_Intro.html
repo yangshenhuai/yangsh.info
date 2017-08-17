@@ -16,6 +16,53 @@ But If you like to stay in Java,[Lombok](https://projectlombok.org/) can provide
 #Install
 The lombok provide some keyword or annotation to make java easier to write,but it will generate the same
 class file as we write regular Java. So not need lombok when run the application.
-For maven , make sure the scope is `provided` and 
+For maven , make sure the scope is `provided` . For Gradle use `compileOnly`(v2.12)
+{% syntax shell %}s
+//For Maven
+<dependencies>
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.16.18</version>
+		<scope>provided</scope>
+	</dependency>
+</dependencies>
+//For Gradle
+dependencies {
+	compileOnly 'org.projectlombok:lombok:1.16.18'
+}
+{% endsyntax %}
+And also need to install lombok plugins in your IDE so the IDE doesn't complain the syntax error
+
+#Features
+
+##[val](https://projectlombok.org/features/val)
+same as kotlin, but it can only be used to declare the final local variables, and it also infer the type from the initialize expression
+
+##[@Cleanup](https://projectlombok.org/features/Cleanup)
+its very useful for closeable resource,its like try-with in Java7
+at the end of the scope ,it will generate some code to safely close the resource
+
+
+##[@Getter/@Setter](https://projectlombok.org/features/GetterSetter)
+you can use @Getter/@Setter in class attribute,  it will generate default get and set method
+and you can also config the access level etc.
+
+##[@ToString](https://projectlombok.org/features/ToString)
+generate the toString using all the field of the class.
+you can configure the `includeFieldNames`
+
+##[@Data](https://projectlombok.org/features/Data)
+exactly like `data class` in Kotlin
+
+##[@Value](https://projectlombok.org/features/Value)
+this is immutable variant of `@Data`, all the field are `private` and `final`
+
+##[@Builder](https://projectlombok.org/features/Builder)
+according [Builder pattern](https://en.wikipedia.org/wiki/Builder_pattern) produce builder APIs for
+your class,you can place on a class or on a constructor.
+
+
+And there're other useful annotation or keyword,MUST have a try
 
 
