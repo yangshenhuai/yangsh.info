@@ -15,18 +15,16 @@ But If you like to stay in Java,[Lombok](https://projectlombok.org/) can provide
 
 #Install
 The lombok provide some keyword or annotation to make java easier to write,but it will generate the same
-class file as we write regular Java. So not need lombok when run the application.
-For maven , make sure the scope is `provided` . For Gradle use `compileOnly`(v2.12)
-{% syntax shell %}s
-//For Maven
-<dependencies>
-	<dependency>
+class file as we write regular Java. So we not need lombok when run the application.
+For maven , make sure the scope is `provided` and gradle `compileOnly`(since v2.12)
+{% syntax shell %}
+# For Maven
+<dependency>
 		<groupId>org.projectlombok</groupId>
 		<artifactId>lombok</artifactId>
 		<version>1.16.18</version>
 		<scope>provided</scope>
 	</dependency>
-</dependencies>
 //For Gradle
 dependencies {
 	compileOnly 'org.projectlombok:lombok:1.16.18'
@@ -63,6 +61,6 @@ according [Builder pattern](https://en.wikipedia.org/wiki/Builder_pattern) produ
 your class,you can place on a class or on a constructor.
 
 
-And there're other useful annotation or keyword,MUST have a try
+And there're other useful annotation or keyword,you MUST have a try
 
 
