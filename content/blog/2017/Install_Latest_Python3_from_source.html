@@ -1,0 +1,72 @@
+---
+title: "Install Python3.6 from source "
+created: !!timestamp '2017-08-15 23:21:00'
+image: /media/images/blog/2017/LookLinux-python3-installation.png
+tags:
+    - Raspberrypi
+---
+{% block excerpt %}
+{% mark excerpt %}
+My respberryPI install respbian7 (wheezy). it has python 2.7 and 3.2 by default , but I need python3.6 in order to run the [wxpy](https://github.com/youfou/wxpy) , so I build Python3.6 from source
+And I also installed Python3.6 from source in my VPS
+{% endmark %}
+{% endblock %}
+
+#Download Python3.6
+Download and extract Python source using following command
+{% syntax shell %}
+cd /usr/src
+wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
+sudo tar xzvf Python-3.6.2.tgz
+{% endsyntax %}
+
+
+#Compile Python Source
+Now need some time to compile the python source code, since my SD card in respberrypi is not very good card, it takes me several <b>HOURS</b> to finish
+following commands
+{% syntax shell %}
+cd Python-3.6.2
+sudo ./configure
+sudo make
+sudo make altinstall
+{% endsyntax %}
+`altinstall` is used to prevent to replace the default python binary in /usr/bin/python 
+
+
+#Check
+And if you finish those command without any error,you can check the version now. By default the pip will also installed with python
+{% syntax shell %}
+python3.6 -V
+    Python 3.6.2
+pip3.6 -V
+    pip 9.0.1 from /usr/local/lib/python3.6/site-packages (python 3.6)
+{% endsyntax %}
+
+And you need to remember to use `python3.6` and `pip3.6` or you can add a link
+
+
+#Centos6
+the first two steps are same. but make sure that your system contains `ssl` module the before your `make`. oherwise when your use `pip install`, it will throw below exception
+{% syntax shell %}
+pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.
+{% endsyntax %}
+you can check which ssl you can get by run below command.
+{% syntax shell %}
+yum list '*ssl*'
+{% endsyntax %}
+In centos6  ,it returns several items , and one of them is `openssl-devel` thats what I need. so I run below method to install it
+{% syntax shell %}
+sudo yum install openssl-devel
+{% endsyntax %}
+
+and after python3.6 and pip3.6 installed succcessfully . when I run below method it still give me an error
+{% syntax shell %}
+[robot@Mr_Robot Python-3.6.2]$ sudo pip3.6 install requests
+sudo: pip3.6: command not found
+{% endsyntax %}
+
+This is because for security reasons `sudo` does not rely on the $PATH set in your environment,there is a `secure_path` option in `/etc/sudoers` that specifies the PATH that sudo will use for locating binaries. For example
+{% syntax shell %}
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+{% endsyntax %}
+Just add `/usr/local/bin` to this `secure_path` . and it all good!
